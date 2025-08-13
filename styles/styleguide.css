@@ -1,0 +1,21 @@
+span{
+    font-family: 'Asap',sans-serif;
+    color: #c0c4ce;
+    opacity: 100%;
+}
+.span{
+    color: red;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+h1{
+font-family: 'Asap',sans-serif;
+color: white;
+font-size: 5rem;
+}
+.p{
+    font-family: 'Asap',sans-serif;
+    color: #878ea1;
+    opacity: 100%;
+    font-size: 1.5rem;
+}
