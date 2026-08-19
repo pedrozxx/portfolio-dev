@@ -1,51 +1,53 @@
-# Portfolio Dev
+# Portfólio — Pedro Augusto Darolt
 
-Projeto do curso de Full-Stack da RocketSeat focado em um website portfolio profissional moderno e responsivo.
+Meu site pessoal: quem eu sou, o que eu construo e como falar comigo. Página estática, responsiva e sem dependências ou etapa de build.
 
-## Screenshots
+🔗 **[Abrir o portfólio](https://pedrozxx.github.io/portfolio-dev/)**
 
-<img width="1920" height="1080" alt="Thumbnail" src="https://github.com/user-attachments/assets/1f393eb4-3ced-4135-83f6-e7ba8d262e95" />
+## O que tem na página
 
----
+- **Abertura** — apresentação e as tecnologias que uso no dia a dia.
+- **Projetos** — cards com captura de tela real de cada projeto, ligando direto para a versão publicada.
+- **Como posso contribuir** — interfaces, APIs e deploy.
+- **Contato** — e-mail, LinkedIn, GitHub e Instagram.
 
-## 🚀 Tecnologias
+## Decisões técnicas
 
-Este projeto foi desenvolvido com as seguintes tecnologias:
+- **Sem framework nem build**: HTML e CSS puros, servidos direto pelo GitHub Pages.
+- **Responsivo de verdade**: larguras fluidas com `max-width` e breakpoints em 768px e 400px — nenhum overflow horizontal.
+- **Acessibilidade**: `alt` descritivo nas imagens de conteúdo, `aria-hidden` nos ícones decorativos, nome acessível em todos os links, foco visível no teclado e respeito a `prefers-reduced-motion`.
+- **Compartilhável**: `meta description`, Open Graph e Twitter Card, para que o link renderize com título, descrição e imagem no LinkedIn e no WhatsApp.
+- **Performance**: `loading="lazy"` e `width`/`height` nas imagens dos projetos, evitando deslocamento de layout.
 
-- HTML5
-- CSS3
-- Google Fontes (Asap, Inconsolata, Maven Pro)
+## Tecnologias
 
-## 💻 Projeto
+HTML5 · CSS3 · Google Fonts (Asap, Inconsolata, Maven Pro)
 
-O Portfolio Dev é um website pessoal que inclui:
+## Como executar
 
-- Seção de introdução com foto de perfil e descrição profissional
-- Carrossel de tecnologias e habilidades
-- Showcase de projetos em destaque
-- Seção de contato e redes sociais
+```bash
+git clone https://github.com/pedrozxx/portfolio-dev.git
+cd portfolio-dev
+```
 
-## 🎨 Layout
+Abra o `index.html` no navegador.
 
-O layout foi desenvolvido com foco em:
+## Estrutura
 
-- Design moderno e minimalista
-- Responsividade para diferentes dispositivos
-- Acessibilidade com elementos semânticos
-- Experiência de usuário intuitiva
+```
+index.html   marcação da página
+style.css    estilos, responsividade e acessibilidade
+assets/      foto, ícones, planos de fundo e capturas dos projetos
+```
 
-## 🌐 Como Acessar
+## Créditos
 
-Clique [aqui](https://pedrozxx.github.io/portfolio-dev/) para acessar o site online.
+O layout parte do desafio de portfólio da trilha Full-Stack da [Rocketseat](https://www.rocketseat.com.br/); o conteúdo, os projetos e os ajustes de responsividade e acessibilidade são meus.
 
-Alternativamente, pode ser acessado localmente seguindo estes passos:
+## Licença
 
-1. Clone o repositório
-2. Abra o arquivo `index.html` em seu navegador
+Distribuído sob a licença MIT. Veja [`LICENSE`](LICENSE) para mais detalhes.
 
-## 📝 Licença
+## Autor
 
-Este projeto está sob a licença MIT.
-
-## 💻 Autor
-[@pedrozxx](https://github.com/pedrozxx)
+**Pedro Augusto Darolt** — [GitHub](https://github.com/pedrozxx) · [LinkedIn](https://www.linkedin.com/in/pedro-darolt/) · pedrocod.dev@gmail.com

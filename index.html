@@ -1,179 +1,253 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=Inconsolata:wght@200..900&family=Maven+Pro:wght@400..900&display=swap" rel="stylesheet">
-    
-    
-    <link rel="stylesheet" href="./style.css">
-    <title>Portfólio</title>
+
+    <title>Pedro Augusto Darolt — Desenvolvedor de Software</title>
+    <meta
+      name="description"
+      content="Desenvolvedor de software em Castanhal, PA. Construo aplicações web de ponta a ponta com React.js, Node.js e Python (FastAPI). Veja meus projetos e entre em contato."
+    />
+    <meta name="author" content="Pedro Augusto Darolt" />
+    <meta name="theme-color" content="#16181d" />
+    <link rel="canonical" href="https://pedrozxx.github.io/portfolio-dev/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:url" content="https://pedrozxx.github.io/portfolio-dev/" />
+    <meta property="og:title" content="Pedro Augusto Darolt — Desenvolvedor de Software" />
+    <meta
+      property="og:description"
+      content="Aplicações web de ponta a ponta com React.js, Node.js e Python (FastAPI). Veja meus projetos."
+    />
+    <meta
+      property="og:image"
+      content="https://pedrozxx.github.io/portfolio-dev/assets/projeto-agenda-pet.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="./assets/icons/Code.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&family=Inconsolata:wght@200..900&family=Maven+Pro:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <section class="opening">
-      <picture>
-        <img src="./assets/foto-pedro.jpg" alt="Foto do Luís" />
-      </picture>
-      <p>Hello World! Meu nome é <span>Pedro Porpino</span> e eu sou</p>
-      <h1>Desenvolvedor Fullstack</h1>
-      <p class="small-text">
-        Transformo necessidades em aplicações reais, envolventes e funcionais.
-        Desenvolvo sistemas através da minha paixão pela tecnologia,
-        contribuindo com soluções inovadoras e eficazes para desafios complexos.
-      </p>
+    <main>
+      <section class="opening">
+        <picture>
+          <img
+            src="./assets/foto-pedro.jpg"
+            alt="Pedro Augusto Darolt, sorrindo, de camisa clara, ao ar livre"
+            width="100"
+            height="100"
+          />
+        </picture>
+        <p>Hello World! Meu nome é <span>Pedro Augusto Darolt</span> e eu sou</p>
+        <h1>Desenvolvedor de Software</h1>
+        <p class="small-text">
+          Construo e coloco no ar aplicações web de ponta a ponta — interface, API, banco
+          e deploy. Hoje trabalho com painéis de BI e ferramentas internas em React.js e
+          Python (FastAPI), usadas todos os dias por times de verdade.
+        </p>
 
-      <ul>
-        <li>
-          <img src="./assets/GitHub.svg" alt="github" />
-          GitHub
-        </li>
-        <li>
-          <img src="./assets/HTML.svg" alt="html" />
-          HTML
-        </li>
-        <li>
-          <img src="./assets/CSS.svg" alt="css" />
-          CSS
-        </li>
-        <li>
-          <img src="./assets/JavaScript.svg" alt="js" />
-          JavaScript
-        </li>
-        <li>
-          <img src="./assets/React.svg" alt="react" />
-          React
-        </li>
-        <li>
-          <img src="./assets/Node.js.svg" alt="node" />
-          Node.js
-        </li>
-      </ul>
-      <a href="#projects-title"><img src="./assets/icons/CaretDoubleDown.svg" alt="down" /></a>
-    </section>
+        <ul aria-label="Principais tecnologias que utilizo">
+          <li><img src="./assets/HTML.svg" alt="" aria-hidden="true" /> HTML</li>
+          <li><img src="./assets/CSS.svg" alt="" aria-hidden="true" /> CSS</li>
+          <li><img src="./assets/JavaScript.svg" alt="" aria-hidden="true" /> JavaScript</li>
+          <li><img src="./assets/React.svg" alt="" aria-hidden="true" /> React</li>
+          <li><img src="./assets/Node.js.svg" alt="" aria-hidden="true" /> Node.js</li>
+          <li><img src="./assets/GitHub.svg" alt="" aria-hidden="true" /> Git</li>
+        </ul>
+        <a href="#projects-title" aria-label="Ir para a seção de projetos">
+          <img src="./assets/icons/CaretDoubleDown.svg" alt="" aria-hidden="true" />
+        </a>
+      </section>
 
-    <section class="projects">
-      <span class="section-subtitle">Meus trabalhos</span>
-      <h2 class="section-title" id="projects-title">
-        Veja os projetos em destaque
-      </h2>
+      <section class="projects">
+        <span class="section-subtitle">Meus trabalhos</span>
+        <h2 class="section-title" id="projects-title">Veja os projetos em destaque</h2>
 
-      <div class="projects-container">
-        <div class="project-card">
-          <picture>
-            <img src="./assets/Thumbnail_Project-01.png" alt="project-1" />
-          </picture>
-          <strong>Projeto 1</strong>
-          <p>Descrição do projeto 1</p>
-        </div>
-
-        <div class="project-card">
-          <picture>
-            <img src="./assets/Thumbnail_Project-02.png" alt="project-2" />
-          </picture>
-          <strong>Projeto 2</strong>
-          <p>Descrição do projeto 2</p>
-        </div>
-
-        <div class="project-card">
-          <picture>
-            <img src="./assets/Thumbnail_Project-03.png" alt="project-3" />
-          </picture>
-          <strong>Projeto 3</strong>
-          <p>Descrição do projeto 3</p>
-        </div>
-
-        <div class="project-card">
-          <picture>
-            <img src="./assets/Thumbnail_Project-04.png" alt="project-4" />
-          </picture>
-          <strong>Projeto 4</strong>
-          <p>Descrição do projeto 4</p>
-        </div>
-
-        <div class="project-card">
-          <picture>
-            <img src="./assets/Thumbnail_Project-05.png" alt="project-5" />
-          </picture>
-          <strong>Projeto 5</strong>
-          <p>Descrição do projeto 5</p>
-        </div>
-
-        <div class="project-card">
-          <picture>
-            <img src="./assets/Thumbnail_Project-06.png" alt="project-6" />
-          </picture>
-          <strong>Projeto 6</strong>
-          <p>Descrição do projeto 6</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="services">
-      <span class="section-subtitle">Meus serviços</span>
-      <h2 class="section-title">Como posso ajudar o seu negócio</h2>
-
-      <div class="services-container">
-        <div class="service-card">
-          <div class="service-card-icon">
-            <img src="./assets/icons/Devices.svg" alt="icon-1" />
-          </div>
-          <strong>Websites e Aplicativos</strong>
-          <p>Desenvolvimento de interfaces</p>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-icon">
-            <img src="./assets/icons/HardDrives.svg" alt="icon-2" />
-          </div>
-          <strong>API e banco de dados</strong>
-          <p>Criação de serviços do sistema</p>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-icon">
-            <img src="./assets/icons/Infinity.svg" alt="icon-3" />
-          </div>
-          <strong>DevOps</strong>
-          <p>Gestão e infraestrutura da aplicação</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact">
-      <span class="section-subtitle contact-subtitle">Contato</span>
-      <h2 class="section-title contact-title">Gostou do meu trabalho?</h2>
-      <p class="contact-text">
-        Entre em contato ou acompanhe as minhas redes sociais!
-      </p>
-
-      <ul>
-        <li>
-          <a href="https://github.com/pedrozxx" target="_blank"></a>
-          <img src="./assets/GitHub.svg" alt="github" />
-          GitHub
-        </li>
-        <li>
+        <div class="projects-container">
           <a
-            href="https://www.linkedin.com/in/pedro-darolt/"
+            class="project-card"
+            href="https://conversor-de-valor.vercel.app"
             target="_blank"
-          ></a>
-          <img src="./assets/icons/LinkedinLogo.svg" alt="linkedin" />
-          LinkedIn
-        </li>
-        <li>
-          <a href="mailto:pedrocod.dev@gmail.com"></a>
-          <img src="./assets/icons/InstagramLogo.svg" alt="email" />
-          Email
-        </li>
-        <li>
-          <a href=""></a>
-          <img src="./assets/icons/InstagramLogo.svg" alt="email" />
-         Instagram
-        </li>
-      </ul>
-    </section>
+            rel="noopener noreferrer"
+          >
+            <picture>
+              <img
+                src="./assets/projeto-conversor.png"
+                alt="Tela do Conversor de Valor, com campo de valor, seletor de moeda e botão Converter"
+                loading="lazy"
+                width="1112"
+                height="568"
+              />
+            </picture>
+            <strong>Conversor de Valor</strong>
+            <p>
+              Conversão entre Real, Dólar, Euro e Libra com cotação real via API e cache
+              de 24h em localStorage. JavaScript puro.
+            </p>
+          </a>
+
+          <a
+            class="project-card"
+            href="https://pedrozxx.github.io/Mundo-Pet/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <picture>
+              <img
+                src="./assets/projeto-agenda-pet.png"
+                alt="Painel da Agenda Pet Shop, com resumo do dia e atendimentos por período"
+                loading="lazy"
+                width="1112"
+                height="568"
+              />
+            </picture>
+            <strong>Agenda Pet Shop</strong>
+            <p>
+              Agenda de atendimentos com validação de campos, bloqueio de conflito de
+              horário e tema claro/escuro. Acessível e responsiva.
+            </p>
+          </a>
+
+          <a
+            class="project-card"
+            href="https://pedrozxx.github.io/Portal-de-noticias/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <picture>
+              <img
+                src="./assets/projeto-portal-noticias.png"
+                alt="Home do Portal de Notícias, com menu de categorias e matéria em destaque"
+                loading="lazy"
+                width="1112"
+                height="568"
+              />
+            </picture>
+            <strong>Portal de Notícias</strong>
+            <p>
+              Layout editorial responsivo construído com CSS Grid, com destaques, grade de
+              matérias e navegação por categoria.
+            </p>
+          </a>
+
+          <a
+            class="project-card"
+            href="https://pedrozxx.github.io/sorteador-de-numeros-rocketseat/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <picture>
+              <img
+                src="./assets/projeto-sorteador.png"
+                alt="Tela do Sorteador de Números, com campos de quantidade e intervalo"
+                loading="lazy"
+                width="1112"
+                height="568"
+              />
+            </picture>
+            <strong>Sorteador de Números</strong>
+            <p>
+              Sorteio de números em um intervalo definido pelo usuário, com validação e
+              opção de permitir ou não repetição.
+            </p>
+          </a>
+        </div>
+
+        <p class="projects-more">
+          Mais projetos no
+          <a href="https://github.com/pedrozxx" target="_blank" rel="noopener noreferrer">meu GitHub</a>.
+        </p>
+      </section>
+
+      <section class="services">
+        <span class="section-subtitle">O que eu faço</span>
+        <h2 class="section-title">Como posso contribuir com o seu time</h2>
+
+        <div class="services-container">
+          <div class="service-card">
+            <div class="service-card-icon">
+              <img src="./assets/icons/Devices.svg" alt="" aria-hidden="true" />
+            </div>
+            <strong>Interfaces web</strong>
+            <p>React.js, Next.js e JavaScript, com foco em responsividade e acessibilidade</p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-icon">
+              <img src="./assets/icons/HardDrives.svg" alt="" aria-hidden="true" />
+            </div>
+            <strong>APIs e dados</strong>
+            <p>Node.js, Express e Python (FastAPI), APIs REST e integração com serviços externos</p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-icon">
+              <img src="./assets/icons/Infinity.svg" alt="" aria-hidden="true" />
+            </div>
+            <strong>Deploy e sustentação</strong>
+            <p>Publicação em Vercel e servidor Linux, com Git, pull requests e code review</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact">
+        <span class="section-subtitle contact-subtitle">Contato</span>
+        <h2 class="section-title contact-title">Vamos conversar?</h2>
+        <p class="contact-text">
+          Estou aberto a oportunidades de estágio ou posição júnior — em Castanhal, Belém
+          ou remoto.
+        </p>
+
+        <ul>
+          <li>
+            <a href="mailto:pedrocod.dev@gmail.com">
+              <span class="sr-only">Enviar e-mail para pedrocod.dev@gmail.com</span>
+            </a>
+            <img src="./assets/icons/EnvelopeSimple.svg" alt="" aria-hidden="true" />
+            pedrocod.dev@gmail.com
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/in/pedro-darolt/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="sr-only">Abrir meu perfil no LinkedIn</span>
+            </a>
+            <img src="./assets/icons/LinkedinLogo.svg" alt="" aria-hidden="true" />
+            LinkedIn
+          </li>
+          <li>
+            <a href="https://github.com/pedrozxx" target="_blank" rel="noopener noreferrer">
+              <span class="sr-only">Abrir meu perfil no GitHub</span>
+            </a>
+            <img src="./assets/icons/GithubLogo.svg" alt="" aria-hidden="true" />
+            GitHub
+          </li>
+          <li>
+            <a
+              href="https://www.instagram.com/_pedrodarolt/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="sr-only">Abrir meu perfil no Instagram</span>
+            </a>
+            <img src="./assets/icons/InstagramLogo.svg" alt="" aria-hidden="true" />
+            Instagram
+          </li>
+        </ul>
+      </section>
+    </main>
   </body>
 </html>
