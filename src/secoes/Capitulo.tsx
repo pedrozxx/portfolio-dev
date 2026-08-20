@@ -2,15 +2,17 @@ import type { ReactNode } from 'react'
 import { useRevelar } from '../hooks/useRevelar'
 
 /**
- * Casca de capítulo: sobrancelha numerada, título e conteúdo.
+ * Casca de capítulo: numeral fantasma ao fundo, sobrancelha numerada, título e
+ * conteúdo.
  *
- * O `<h2>` é sempre a palavra comum — *Experiência*, *Projetos públicos* — e o
- * vocabulário do aparato fica na sobrancelha (DESIGN.md §10). Se o recrutador
- * não achar "Experiência" num Ctrl+F, ou o ATS não indexar, a direção falhou por
- * mais coerente que esteja.
+ * O `<h2>` é sempre a palavra comum — *Experiência*, *Projetos*, *Sobre*. O
+ * vocabulário de efeito fica na sobrancelha. Se o recrutador não achar
+ * "Experiência" num Ctrl+F, ou o ATS não indexar, a direção falhou por mais
+ * bonita que esteja.
  *
- * Não há numeral fantasma gigante ao fundo: os três juízes vetaram, e nomear um
- * ornamento não o autoriza. O número vive na sobrancelha, onde é lido.
+ * O numeral gigante ao fundo é `aria-hidden` e redundante por construção: o
+ * mesmo número aparece em texto na sobrancelha, então escondê-lo do leitor de
+ * tela não perde informação nenhuma.
  */
 
 interface Props {
@@ -23,7 +25,14 @@ interface Props {
   readonly semMovimento?: boolean
 }
 
-export function Capitulo({ id, numero, sobrancelha, titulo, children, semMovimento = false }: Props) {
+export function Capitulo({
+  id,
+  numero,
+  sobrancelha,
+  titulo,
+  children,
+  semMovimento = false,
+}: Props) {
   const { alvo, revelado } = useRevelar<HTMLElement>()
 
   return (
@@ -33,6 +42,10 @@ export function Capitulo({ id, numero, sobrancelha, titulo, children, semMovimen
       className={`capitulo entra${!semMovimento && revelado ? ' entra--pronto' : ''}`}
       aria-labelledby={`titulo-${id}`}
     >
+      <span className="capitulo__fantasma" aria-hidden="true">
+        {numero}
+      </span>
+
       <div className="container">
         <p className="sobrancelha">
           <span className="capitulo__numero">{numero}</span>

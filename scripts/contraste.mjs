@@ -82,9 +82,10 @@ const PARES = {
   escuro: { papel: '--papel', superficie: '--superficie', tinta: '--tinta', tintaFraca: '--tinta-fraca', acento: '--acento', acentoContraste: '--acento-contraste', ambar: '--estado', fio: '--fio', fioEstrutural: '--fio-estrutural' },
 }
 
-// O bloco claro e o :root inicial; o escuro e o override de [data-tema="escuro"].
-const blocoClaro = css.slice(css.indexOf(':root {'), css.indexOf('@media'))
-const blocoEscuro = css.slice(css.indexOf(":root[data-tema=\"escuro\"]"))
+// Esta direcao e escura por natureza: o :root canonico e o ESCURO, e o claro e
+// que e a variante, no override de [data-tema="claro"].
+const blocoEscuro = css.slice(css.indexOf(':root {'), css.indexOf('@media'))
+const blocoClaro = css.slice(css.indexOf(':root[data-tema="claro"]'))
 
 const doCss = (bloco, nome) => {
   // Regex montada com RegExp: numa string, '\s' vira apenas 's' — o padrão saía

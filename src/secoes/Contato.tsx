@@ -42,7 +42,7 @@ export function Contato({ idioma }: { readonly idioma: Idioma }) {
           : 'Looking for an internship or junior role — Castanhal, Belém or remote.'
       }
     >
-      <p className="contato__sub mono">
+      <p className="contato__sub">
         {idioma === 'pt'
           ? 'Respondo por e-mail e por WhatsApp no mesmo dia útil.'
           : 'I reply by e-mail and WhatsApp within the same business day.'}

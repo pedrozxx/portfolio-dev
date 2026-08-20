@@ -97,7 +97,7 @@ export function Sobre({ idioma }: { readonly idioma: Idioma }) {
         )}
       </p>
 
-      <dl className="documento sobre__stack">
+      <dl className="sobre__stack">
         {/*
           Numa lista de definição o <dt> PRECISA vir antes do <dd>: é o que a
           especificação exige, e é também a ordem de leitura correta aqui — o
@@ -106,9 +106,9 @@ export function Sobre({ idioma }: { readonly idioma: Idioma }) {
           margem esquerda sem que a ordem no DOM mude.
         */}
         {STACK.map((linha) => (
-          <div className="registro" key={linha.rotulo.pt}>
-            <dt className="aparato aparato--forte">{linha.rotulo[idioma]}</dt>
-            <dd className="corpo sobre__itens">
+          <div className="sobre__linha" key={linha.rotulo.pt}>
+            <dt className="sobre__rotulo">{linha.rotulo[idioma]}</dt>
+            <dd className="sobre__itens">
               {idioma === 'en' && 'itensEn' in linha ? linha.itensEn : linha.itens}
             </dd>
           </div>
@@ -135,13 +135,13 @@ export function Sobre({ idioma }: { readonly idioma: Idioma }) {
       </ul>
 
       <h3 className="sobre__sub">{t.secaoFormacao}</h3>
-      <dl className="documento sobre__formacao">
+      <dl className="sobre__stack sobre__formacao">
         {FORMACAO.map((f) => (
-          <div className="registro" key={f.instituicao}>
-            <dt className="aparato">
+          <div className="sobre__linha" key={f.instituicao}>
+            <dt className="sobre__rotulo">
               {typeof f.carimbo === 'string' ? f.carimbo : f.carimbo[idioma]}
             </dt>
-            <dd className="corpo">
+            <dd>
               <span className="sobre__curso">{f.curso[idioma]}</span>
               <span className="sobre__instituicao mono">
                 {f.instituicao} · {f.periodo[idioma]}
@@ -150,9 +150,9 @@ export function Sobre({ idioma }: { readonly idioma: Idioma }) {
           </div>
         ))}
         {CERTIFICACOES.map((c) => (
-          <div className="registro" key={c.nome}>
-            <dt className="aparato mono">{c.ano}</dt>
-            <dd className="corpo sobre__certificacao">{c.nome}</dd>
+          <div className="sobre__linha" key={c.nome}>
+            <dt className="sobre__rotulo">{c.ano}</dt>
+            <dd className="sobre__itens">{c.nome}</dd>
           </div>
         ))}
       </dl>

@@ -14,8 +14,8 @@ import { home } from '../caminhos'
  * virar mentira.
  */
 
-const MEDIDAS_CLARO = 'texto 17,03:1 · acento 5,87:1 · fio estrutural 3,99:1'
-const MEDIDAS_ESCURO = 'texto 15,93:1 · acento 8,13:1 · fio estrutural 5,25:1'
+const MEDIDAS_CLARO = 'texto 16,02:1 · acento 6,03:1 · fio estrutural 3,81:1'
+const MEDIDAS_ESCURO = 'texto 13,05:1 · acento 7,14:1 · fio estrutural 3,72:1'
 
 export function Colofao({ idioma }: { readonly idioma: Idioma }) {
   const t = textos(idioma)
@@ -29,7 +29,7 @@ export function Colofao({ idioma }: { readonly idioma: Idioma }) {
 
         <dl className="colofao__medidas mono">
           <dt>{t.rodapeColofao}</dt>
-          <dd>Sora 600/400 · JetBrains Mono 500/400 · corpo 17/1,62 · medida 62ch</dd>
+          <dd>Orbitron 700 · Rajdhani 400/600 · JetBrains Mono 400/500 · corpo 18/1,6 · medida 62ch</dd>
           <dd>
             {idioma === 'pt' ? 'Contraste medido, tema claro' : 'Measured contrast, light theme'}:{' '}
             {MEDIDAS_CLARO}
@@ -39,10 +39,10 @@ export function Colofao({ idioma }: { readonly idioma: Idioma }) {
           </dd>
         </dl>
 
-        <p className="colofao__legenda mono">
+        <p className="colofao__creditos">
           {idioma === 'pt'
-            ? 'Na margem, a procedência de cada afirmação. Em peso 500 quando há arquivo, teste ou medição por trás; em peso 400 quando é prova declarada.'
-            : 'In the margin, the source of every claim. Weight 500 when a file, test or measurement backs it; weight 400 when the proof is declared.'}
+            ? 'A direção visual — paleta, tipografia e a gramática de movimento — foi construída a partir de matteodante.it, medida no navegador e adaptada. O conteúdo, a estrutura e o código são meus.'
+            : 'The visual direction — palette, typography and motion grammar — was built from matteodante.it, measured in the browser and adapted. The content, structure and code are mine.'}
         </p>
 
         <p className="colofao__creditos mono">

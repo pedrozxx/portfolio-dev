@@ -21,16 +21,16 @@ export function Experiencia({ idioma }: { readonly idioma: Idioma }) {
   return (
     <Capitulo
       id="experiencia"
-      numero="02"
+      numero="03"
       sobrancelha={idioma === 'pt' ? 'EMPREGADOR · CIDADE · PERÍODO' : 'EMPLOYER · CITY · PERIOD'}
       titulo={t.secaoExperiencia}
       semMovimento
     >
-      <div className="documento">
+      <div>
 
         {EXPERIENCIA.map((cargo) => (
-          <div className="registro" key={cargo.empresa}>
-            <div className="corpo">
+          <article className="cargo" key={cargo.empresa}>
+            <div>
               <div className="cargo__cabeca">
                 <h3 className="cargo__titulo">
                   {cargo.cargo[idioma]} — {cargo.empresa}
@@ -57,8 +57,7 @@ export function Experiencia({ idioma }: { readonly idioma: Idioma }) {
               {cargo.semLink && <p className="cargo__selo mono">{cargo.semLink[idioma]}</p>}
             </div>
 
-            <p className="aparato">{idioma === 'pt' ? 'currículo' : 'résumé'}</p>
-          </div>
+          </article>
         ))}
       </div>
     </Capitulo>

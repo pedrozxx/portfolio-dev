@@ -1,74 +1,90 @@
 /*
  * Tokens. Fonte única de verdade da cor, do tipo e do espaço.
  *
- * Nenhum hex fora deste arquivo. Os valores e as razões de contraste que os
- * justificam estão em DESIGN.md §2 e §4, e scripts/contraste.mjs recalcula cada
- * par no CI — se alguém ajustar um token e derrubar um par abaixo do piso da
- * WCAG, o build para.
+ * A paleta e a tipografia foram medidas em matteodante.it/en no Chrome, a pedido
+ * do autor, e adotadas como direção. Os valores originais estão preservados; os
+ * dois ajustes que a acessibilidade exigiu estão registrados no DESIGN.md §2.5 e
+ * recalculados por scripts/contraste.mjs a cada push.
  *
- * A ordem dos blocos importa e é normativa (DESIGN.md §2.4): nenhuma cor nasce
- * dentro de media query. O tema claro é o :root completo; o escuro só REDEFINE.
- * Assim o alternador vence nos dois sentidos e nada fica indefinido.
+ * Nenhum hex fora deste arquivo.
+ *
+ * A ordem dos blocos é normativa (DESIGN.md §2.4): nenhuma cor nasce dentro de
+ * media query. O tema escuro é o :root completo — esta direção é escura por
+ * natureza, e o claro é que é a variante. O alternador vence nos dois sentidos.
  */
 
 :root {
-  /* --- cor: claro (canônico) --- */
-  --papel:            #FBFAF7;
-  --superficie:       #F2EFE8;
-  --tinta:            #16181C;
-  --tinta-fraca:      #5B5F66;
-  --acento:           #0E6E63;
-  --acento-contraste: #FBFAF7;
-  --estado:           #8A5800;
-  --fio:              #E0DBD0;
-  --fio-estrutural:   #767E7C;
+  /* --- cor: escuro (canônico) --- */
+  --papel:            #05060A;
+  --superficie:       #14120F;
+  --superficie-alta:  #1F1C18;
+  --tinta:            #D4CFC5;
+  --tinta-forte:      #F2EDE3;
+  --tinta-fraca:      #8A8680;
+  --acento:           #FF6B35;
+  --acento-contraste: #05060A;
+  --estado:           #FFB347;
+  --fio:              #26221D;
+  --fio-estrutural:   #6E6960;
 
   /* --- tipografia --- */
-  --fonte:      "Sora", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-  --fonte-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
-  --corpo:        1.0625rem;
-  --corpo-altura: 1.62;
+  --fonte-display: "Orbitron", "Rajdhani", ui-sans-serif, system-ui, sans-serif;
+  --fonte:         "Rajdhani", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --fonte-mono:    "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+
+  --corpo:        1.125rem;
+  --corpo-altura: 1.6;
   --mono-base:    1rem;
   --tracking-sobrancelha: 0.32em;
-  --tracking-rotulo:      0.06em;
+  --tracking-rotulo:      0.08em;
+  --tracking-display:    -0.01em;
   --medida: 62ch;
 
   /* --- espaço --- */
   --e1: .25rem; --e2: .5rem; --e3: .75rem; --e4: 1rem;
-  --e5: 1.5rem; --e6: 2rem;  --e7: 3rem;   --e8: 5rem;
+  --e5: 1.5rem; --e6: 2rem;  --e7: 3rem;   --e8: 5rem;  --e9: 8rem;
 
   /* --- layout --- */
-  --largura-maxima:  72rem;
-  --largura-aparato: 12rem;
-  --gap-aparato:     2rem;
+  --largura-maxima:  76rem;
   --recuo-pagina:    1.5rem;
-  --raio:            4px;
+  --raio:            2px;
   --raio-pilula:     999px;
   --alvo:            48px;
+  --altura-cabecalho: 72px;
   --proporcao-captura: 1483 / 812;
 
   /* --- movimento --- */
-  --transicao: .12s cubic-bezier(.2, 0, 0, 1);
-  --entrada:   .18s cubic-bezier(.19, 1, .22, 1);
-  --progresso: 0;
+  /* Os mesmos easings expostos no site de referência. `out-expo` é o que dá o
+     desacelerar longo e cinematográfico; `gleasing` é o de interação curta. */
+  --ease-out-expo:      cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out-cubic:  cubic-bezier(0.645, 0.045, 0.355, 1);
+  --ease-gleasing:      cubic-bezier(0.4, 0, 0, 1);
 
-  color-scheme: light dark;
+  --transicao: 0.18s var(--ease-gleasing);
+  --entrada:   0.9s var(--ease-out-expo);
+
+  /* Escritas por requestAnimationFrame. Ficam aqui para existirem também quando
+     o JavaScript não roda — a página nasce num estado válido, nunca em branco. */
+  --progresso: 0;
+  --trilho: 0;
+
+  color-scheme: dark light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-tema="claro"]) {
-    --papel: #0C1B22; --superficie: #17303A;
-    --tinta: #EFF5F5; --tinta-fraca: #9FB3B8;
-    --acento: #35C4B5; --acento-contraste: #0C1B22;
-    --estado: #D99A2B;
-    --fio: #22414C; --fio-estrutural: #6B939C;
+@media (prefers-color-scheme: light) {
+  :root:not([data-tema="escuro"]) {
+    --papel: #F2EDE3; --superficie: #E4DDCF; --superficie-alta: #D9D1C0;
+    --tinta: #14120F; --tinta-forte: #05060A; --tinta-fraca: #57534B;
+    --acento: #9A3A0C; --acento-contraste: #F2EDE3;
+    --estado: #7A4E00;
+    --fio: #D2CABA; --fio-estrutural: #7E7768;
   }
 }
 
-:root[data-tema="escuro"] {
-  --papel: #0C1B22; --superficie: #17303A;
-  --tinta: #EFF5F5; --tinta-fraca: #9FB3B8;
-  --acento: #35C4B5; --acento-contraste: #0C1B22;
-  --estado: #D99A2B;
-  --fio: #22414C; --fio-estrutural: #6B939C;
+:root[data-tema="claro"] {
+  --papel: #F2EDE3; --superficie: #E4DDCF; --superficie-alta: #D9D1C0;
+  --tinta: #14120F; --tinta-forte: #05060A; --tinta-fraca: #57534B;
+  --acento: #9A3A0C; --acento-contraste: #F2EDE3;
+  --estado: #7A4E00;
+  --fio: #D2CABA; --fio-estrutural: #7E7768;
 }

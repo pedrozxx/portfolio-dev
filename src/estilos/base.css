@@ -1,22 +1,29 @@
 /*
- * Base: reset mínimo, tipografia e as regras transversais do DESIGN.md.
+ * Base: reset mínimo, tipografia e regras transversais.
  * Nenhum hex aqui — só tokens.
  */
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-* { margin: 0; }
+* {
+  margin: 0;
+}
 
 html {
   scroll-behavior: smooth;
-  /* Cabeçalho fixo de 56px + respiro. Sem isto a âncora encosta no topo e o
-     título da seção fica escondido atrás do cabeçalho. */
-  scroll-padding-top: 72px;
+  /* Cabeçalho fixo + respiro folgado. Orbitron em caixa alta joga o circunflexo
+     de "EXPERIÊNCIA" e o agudo de "CÓDIGO" bem acima da altura de caixa: com
+     folga curta, a âncora parava com o acento por baixo da barra. */
+  scroll-padding-top: calc(var(--altura-cabecalho) + var(--e6));
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  /* O fundo é explícito: fundo transparente empresta o tema de quem hospeda. */
+  /* Fundo explícito: transparente empresta o tema de quem hospeda a página. */
   background: var(--papel);
   color: var(--tinta);
   font-family: var(--fonte);
@@ -25,68 +32,102 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* Números tabulares em todo o site (DESIGN.md §3): o alinhamento vertical dos
-     valores entre entradas vizinhas é o que faz o olho pousar no número. */
   font-variant-numeric: tabular-nums;
-  /* Rede de seguranca: no zoom de texto a 200% um rotulo em mono de 14
-     caracteres passa de 340px e sozinho estoura uma tela de 320. Quebrar palavra
-     e feio; barra de rolagem horizontal e falha critica (DESIGN.md §6.4). */
+  /* Rede de segurança: um rótulo em mono de 14 caracteres passa de 340px no zoom
+     de texto a 200% e sozinho estoura uma tela de 320. Quebrar palavra é feio;
+     barra de rolagem horizontal é falha crítica. */
   overflow-wrap: break-word;
 }
 
-/* `overflow-x: hidden` no body é proibido (DESIGN.md §6.4): mata `position:
-   sticky` nos descendentes e esconde o estouro em vez de corrigi-lo. */
+/* `overflow-x: hidden` no body é proibido: mata `position: sticky` nos
+   descendentes — e esta direção depende de sticky em três lugares. */
 
-img, picture, svg { display: block; max-width: 100%; }
-img { height: auto; }
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img {
+  height: auto;
+}
 
-button, input, select, textarea { font: inherit; color: inherit; }
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
 
 ::selection {
   background: var(--acento);
-  /* Foreground explícito e obrigatório: sem ele o par cai em 1,96:1 no escuro e
-     2,88:1 no claro — reprova a 1.4.3 num estado alcançado com Ctrl+A. */
+  /* Foreground explícito e obrigatório: o creme sobre o laranja mede 2,43:1 e
+     reprova a 1.4.3 num estado que qualquer pessoa alcança com Ctrl+A. Com o
+     fundo da página como texto, são 7,14:1. */
   color: var(--acento-contraste);
 }
 
 :focus-visible {
   outline: 2px solid var(--acento);
-  outline-offset: 2px;
+  outline-offset: 3px;
   border-radius: 2px;
 }
-:focus:not(:focus-visible) { outline: none; }
+:focus:not(:focus-visible) {
+  outline: none;
+}
 
 /* ---------- tipografia ---------- */
 
-h1, h2, h3 {
-  font-weight: 600;
-  line-height: 1.1;
+/*
+ * Orbitron é fonte de display e só isso: caixa alta, títulos, numerais de
+ * capítulo. Ela não tem itálico, tem altura-x baixa e desenho largo — em texto
+ * corrido cansa em duas linhas. A prosa é Rajdhani; o dado é JetBrains Mono.
+ */
+.display {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-display);
+  line-height: 0.98;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(2.35rem, 6.2vw, 4.5rem);
-  letter-spacing: -0.025em;
-  line-height: 1.04;
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-display);
+  line-height: 0.98;
+  font-size: clamp(2.5rem, 8.5vw, 7rem);
+  text-wrap: balance;
 }
 
 h2 {
-  font-size: clamp(1.6rem, 3.2vw, 1.9rem);
-  letter-spacing: -0.02em;
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-display);
+  /* 1.08 e não 1: o acento precisa caber dentro da linha. */
+  line-height: 1.08;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  text-wrap: balance;
 }
 
-h3 { font-size: 1.125rem; }
+h3 {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.15;
+}
 
 p {
   text-wrap: pretty;
   hyphens: none;
-  /* Medida maxima de leitura. Vale para PROSA — texto em mono (sobrancelha,
-     rotulo, faixa tecnica, carimbo) mede em outra escala e e resetado abaixo,
-     senao a sobrancelha do hero quebra em duas linhas com o fio orfao na
-     primeira, que foi o que apareceu na primeira renderizacao. */
-  /* `min(..., 100%)` e nao so `62ch`: a medida em ch cresce junto com a fonte, e
-     no zoom de texto a 200% um paragrafo de 62ch passa a exigir o dobro da
-     largura da tela. Medido: estourava em 320, 390 e 768. */
+  /* `min(..., 100%)` e não só `62ch`: a medida em ch cresce junto com a fonte, e
+     no zoom de texto a 200% um parágrafo de 62ch exige o dobro da tela. */
   max-inline-size: min(var(--medida), 100%);
 }
 
@@ -95,9 +136,11 @@ p.sobrancelha,
 p.marcadores,
 .regua p,
 .cargo__expediente,
-.colofao p { max-inline-size: none; }
+.colofao p {
+  max-inline-size: none;
+}
 
-/* A voz de todo DADO. Prosa em mono é proibida (DESIGN.md §3.2). */
+/* A voz de todo DADO. Prosa em mono é proibida. */
 .mono {
   font-family: var(--fonte-mono);
   font-size: var(--mono-base);
@@ -106,6 +149,12 @@ p.marcadores,
   font-variant-numeric: tabular-nums;
 }
 
+/*
+ * Sobrancelha: mono em caixa alta, tracking de 0,32em, precedida de um fio de
+ * 56x2px no acento. É a marca gráfica que o site de referência usa em toda
+ * seção — e, por coincidência medida, a mesma que o Pedro já usava nos dois
+ * banners que desenhou para o próprio LinkedIn.
+ */
 .sobrancelha {
   font-family: var(--fonte-mono);
   font-size: var(--mono-base);
@@ -113,46 +162,35 @@ p.marcadores,
   letter-spacing: var(--tracking-sobrancelha);
   text-transform: uppercase;
   color: var(--acento);
-  display: flex;
-  /* `flex-start`, não `center`: quando a sobrancelha quebra em várias linhas —
-     e ela quebra no celular — o fio centralizado ia parar no meio do bloco,
-     órfão. Alinhado ao topo e deslocado meia entrelinha, ele senta na primeira
-     linha, que é onde a marca dele vive nos dois banners do LinkedIn. */
-  align-items: flex-start;
-  gap: var(--e4);
   /*
-    `nowrap`, e a quebra acontece DENTRO do texto. Com `wrap`, o fio de 56x2px
-    nao cabia junto do texto em tela estreita e ia sozinho para uma linha
-    propria, virando um tracinho orfao acima da sobrancelha. Com `nowrap` mais o
-    `min-inline-size: 0` abaixo, o fio fica na esquerda da primeira linha e o
-    texto quebra em quantas linhas precisar — que e como a marca dele funciona
-    nos dois banners do LinkedIn.
-  */
-  flex-wrap: nowrap;
-}
-/* Item de flex nao encolhe abaixo do conteudo minimo sem isto. */
-.sobrancelha > * {
-  min-inline-size: 0;
+   * O fio SAI do fluxo, em vez de ser um item de flex.
+   *
+   * Como item de flex ele criava dois problemas de uma vez: com `wrap`, ia
+   * sozinho para uma linha própria quando o texto não cabia ao lado, virando um
+   * tracinho órfão; com `nowrap`, o texto não podia quebrar e a sobrancelha
+   * estourava a página no zoom de texto a 200% — medido, 31px de excesso numa
+   * tela de 320. Absoluto, ele fica ancorado na primeira linha e o texto flui
+   * normalmente, quebrando em quantas linhas precisar.
+   */
+  position: relative;
+  padding-inline-start: calc(56px + var(--e4));
 }
 
-/* O fio de 56x2px que precede a sobrancelha. É a marca que ele já usa nos dois
-   banners do LinkedIn — herdar aqui é continuidade, não empréstimo. */
 .sobrancelha::before {
   content: "";
-  flex: 0 0 auto;
+  position: absolute;
+  inset-inline-start: 0;
+  /* Meia entrelinha, para o fio cair na altura óptica da primeira linha. */
+  inset-block-start: 0.72em;
   inline-size: 56px;
   block-size: 2px;
   background: var(--acento);
-  /* Meia entrelinha da primeira linha, para o fio cair na altura óptica do texto. */
-  margin-block-start: 0.72em;
 }
 
-/* O tracking de 0,32em é a assinatura, mas em tela estreita ele sozinho quebra
-   a sobrancelha em quatro linhas. Abaixo de 600px ele afrouxa. */
 @media (max-width: 599px) {
   .sobrancelha {
     letter-spacing: 0.16em;
-    gap: var(--e3);
+    padding-inline-start: calc(32px + var(--e3));
   }
   .sobrancelha::before {
     inline-size: 32px;
@@ -163,8 +201,10 @@ p.marcadores,
 
 .sr-only {
   position: absolute;
-  inline-size: 1px; block-size: 1px;
-  padding: 0; margin: -1px;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
@@ -180,12 +220,22 @@ p.marcadores,
 
 /* ---------- movimento ---------- */
 
+/*
+ * `prefers-reduced-motion` desliga TUDO, e nenhum conteúdo depende de animação
+ * para existir: o estado base de cada elemento animado é o estado final. Isto é
+ * o que separa uma direção cinematográfica de uma armadilha de acessibilidade —
+ * e é a única regra que esta direção não negocia.
+ */
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
+    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }

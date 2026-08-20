@@ -1,33 +1,47 @@
+import { useEffect, useState } from 'react'
 import type { Idioma } from '../conteudo/projetos'
 import { textos } from '../i18n'
 import { aplicarTema, lerTema, temaEfetivo } from '../tema'
 import { BotaoLink } from './Botao'
 import { home, publico } from '../caminhos'
 
-/**
- * Cabeçalho fixo (DESIGN.md §5.1).
- *
- * A navegação abaixo de 900px é um <details>/<summary> NATIVO: zero JavaScript,
- * zero armadilha de foco, zero menu inventado. O navegador já sabe abrir, fechar,
- * receber foco, responder ao Esc e anunciar o estado — um menu feito à mão erra
- * pelo menos uma dessas quatro coisas.
- */
+const AVATAR = import.meta.glob<string>('../assets/pedro.{avif,webp}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+})
 
-export const CAPITULOS = [
-  { id: 'radar', numero: '01' },
-  { id: 'experiencia', numero: '02' },
-  { id: 'projetos', numero: '03' },
-  { id: 'sobre', numero: '04' },
-  { id: 'contato', numero: '05' },
-] as const
+/**
+ * Cabeçalho fixo.
+ *
+ * Minimalista de propósito, como o do site de referência: retrato e nome à
+ * esquerda, alternadores e UM botão em pílula à direita. Não há navegação de
+ * capítulos.
+ *
+ * Duas razões, e a segunda foi medida. A primeira: a página é uma passagem, não
+ * um documento de consulta — o gesto que ela pede é rolar, e um índice no topo
+ * convida a pular justamente a sequência que é o argumento. A segunda: com os
+ * cinco capítulos, a barra somava mais que a largura do contêiner e quebrava em
+ * duas linhas, cobrindo o título do hero. O botão é o alvo do recrutador e nunca
+ * pode ser o que cede espaço.
+ */
 
 interface Props {
   readonly idioma: Idioma
-  readonly capituloAtual: string | null
 }
 
-export function Cabecalho({ idioma, capituloAtual }: Props) {
+export function Cabecalho({ idioma }: Props) {
   const t = textos(idioma)
+  const [rolou, setRolou] = useState(false)
+
+  // O fio embaixo do cabeçalho só aparece quando há conteúdo passando por baixo.
+  // No topo da página ele seria uma linha atravessando o hero sem motivo.
+  useEffect(() => {
+    const medir = () => setRolou(window.scrollY > 8)
+    medir()
+    window.addEventListener('scroll', medir, { passive: true })
+    return () => window.removeEventListener('scroll', medir)
+  }, [])
 
   /*
    * O tema não entra no render — nem para escolher o rótulo do botão.
@@ -50,48 +64,24 @@ export function Cabecalho({ idioma, capituloAtual }: Props) {
     aplicarTema(atual === 'escuro' ? 'claro' : 'escuro')
   }
 
-  const nomes: Record<string, { pt: string; en: string }> = {
-    radar: { pt: 'Radar', en: 'Radar' },
-    experiencia: { pt: 'Experiência', en: 'Experience' },
-    projetos: { pt: 'Projetos', en: 'Projects' },
-    sobre: { pt: 'Sobre', en: 'About' },
-    contato: { pt: 'Contato', en: 'Contact' },
-  }
-
-  const links = CAPITULOS.map((c) => (
-    <li key={c.id}>
-      <a
-        href={`#${c.id}`}
-        className="cabecalho__ancora"
-        {...(capituloAtual === c.id ? { 'aria-current': 'true' as const } : {})}
-      >
-        <span className="cabecalho__numero" aria-hidden="true">
-          {c.numero}
-        </span>
-        {nomes[c.id]?.[idioma]}
-      </a>
-    </li>
-  ))
-
   return (
-    <header className="cabecalho">
+    <header className="cabecalho" data-rolou={rolou ? 'sim' : 'nao'}>
       <div className="cabecalho__interno container">
-        <a href="#topo" className="cabecalho__marca mono">
-          PEDRO A. DAROLT
+        <a href="#topo" className="cabecalho__marca">
+          <picture>
+            <source type="image/avif" srcSet={AVATAR['../assets/pedro.avif']} />
+            <img
+              src={AVATAR['../assets/pedro.webp']}
+              alt=""
+              width={36}
+              height={36}
+              className="cabecalho__avatar"
+            />
+          </picture>
+          <span>PEDRO A. DAROLT</span>
         </a>
 
-        <nav className="cabecalho__nav" aria-label={idioma === 'pt' ? 'Capítulos' : 'Chapters'}>
-          <ul className="cabecalho__lista">{links}</ul>
-        </nav>
-
-        <details className="cabecalho__menu">
-          <summary className="mono">{idioma === 'pt' ? 'Capítulos' : 'Chapters'}</summary>
-          <nav aria-label={idioma === 'pt' ? 'Capítulos' : 'Chapters'}>
-            <ul className="cabecalho__lista cabecalho__lista--vertical">{links}</ul>
-          </nav>
-        </details>
-
-        <div className="cabecalho__acoes">
+        <div className="cabecalho__acoes cabecalho__acoes--fim">
           <nav className="alternador mono" aria-label={idioma === 'pt' ? 'Idioma' : 'Language'}>
             {/*
               O idioma corrente não é link — é texto com aria-current. Três

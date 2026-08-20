@@ -1,138 +1,133 @@
+import type { CSSProperties } from 'react'
 import type { Idioma } from '../conteudo/projetos'
 import { textos } from '../i18n'
 import { publico } from '../caminhos'
 import { BotaoLink } from '../componentes/Botao'
 import { Marcadores } from '../componentes/Marcadores'
+import { useSequenciaDoHero } from '../hooks/useSequenciaDoHero'
 
 /**
- * Abertura (DESIGN.md §10, item 01). Zero movimento aqui.
+ * Abertura (a tela cheia) + a linha de passagem que entra por cima enquanto ela
+ * sai. É a sequência que define a direção: o site não começa numa página,
+ * começa numa passagem.
  *
- * A ordem vertical é fixa e existe para resolver a triagem de quinze segundos:
- * nível pretendido e lugar antes de tudo, porque triagem é eliminatória por
- * logística antes de ser por talento; depois a tese; depois as três leituras com
- * a origem de cada número.
+ * O movimento é escrito em custom properties e aplicado por `opacity` e
+ * `transform` — nunca `top`, `height` ou `width`. Com `prefers-reduced-motion` o
+ * hook devolve 0 e nada se move; o estado parado é o estado legível.
  */
 
 const RETRATO = import.meta.glob<string>('../assets/pedro*.{avif,webp}', {
-  eager: true, query: '?url', import: 'default',
+  eager: true,
+  query: '?url',
+  import: 'default',
 })
-
-/** Cada leitura traz a fonte junto. Número sem procedência não é sóbrio: é inventado. */
-const LEITURAS = [
-  {
-    valor: '1.563 → 93',
-    rotulo: { pt: 'LINHAS, COMPONENTE PRINCIPAL', en: 'LINES, MAIN COMPONENT' },
-    fonte: {
-      pt: 'refatoração da landing de captação, Norte Geradores',
-      en: 'lead-capture landing refactor, Norte Geradores',
-    },
-  },
-  {
-    valor: '39 + 39',
-    rotulo: { pt: 'TESTES VITEST + PYTEST', en: 'VITEST + PYTEST TESTS' },
-    fonte: {
-      pt: 'radar-licitacoes-pa, CI no GitHub Actions',
-      en: 'radar-licitacoes-pa, CI on GitHub Actions',
-    },
-  },
-  {
-    valor: 'JUN/2026 →',
-    rotulo: { pt: 'ESTAGIÁRIO DE DEV, BENEVIDES (PA)', en: 'DEV INTERN, BENEVIDES (PA)' },
-    fonte: { pt: 'currículo', en: 'résumé' },
-  },
-] as const
 
 export function Abertura({ idioma }: { readonly idioma: Idioma }) {
   const t = textos(idioma)
+  const avanco = useSequenciaDoHero()
+
+  // O hero apaga na primeira meia tela; a passagem entra na segunda metade.
+  const saida = Math.min(1, avanco / 0.7)
+  const estiloHero: CSSProperties = {
+    '--hero-opacidade': String(1 - saida),
+    '--hero-escala': String(1 - saida * 0.06),
+    '--hero-y': `${saida * -40}px`,
+  } as CSSProperties
+
+  const entrada = Math.min(1, Math.max(0, (avanco - 0.55) / 0.5))
+  const estiloPassagem: CSSProperties = {
+    '--passagem-opacidade': String(entrada),
+    '--passagem-y': `${(1 - entrada) * 32}px`,
+  } as CSSProperties
 
   return (
-    <section className="abertura" id="topo" aria-labelledby="titulo-principal">
-      <div className="container">
-        <p className="sobrancelha">
-          {idioma === 'pt'
-            ? 'ESTÁGIO OU JÚNIOR · CASTANHAL · BELÉM · REMOTO (UTC−3)'
-            : 'INTERN OR JUNIOR · CASTANHAL · BELÉM · REMOTE (UTC−3)'}
-        </p>
-
-        <h1 id="titulo-principal" className="abertura__titulo">
-          {idioma === 'pt'
-            ? 'Meu código roda em produção — e dá para conferir.'
-            : 'My code runs in production — and you can check it.'}
-        </h1>
-
-        <div className="abertura__apresentacao">
-          <picture>
-            <source type="image/avif" srcSet={`${RETRATO['../assets/pedro.avif']}, ${RETRATO['../assets/pedro@2x.avif']} 2x`} />
-            <img
-              src={RETRATO['../assets/pedro.webp']}
-              srcSet={`${RETRATO['../assets/pedro.webp']}, ${RETRATO['../assets/pedro@2x.webp']} 2x`}
-              alt={
-                idioma === 'pt'
-                  ? 'Pedro Augusto Darolt, de camisa clara, ao ar livre.'
-                  : 'Pedro Augusto Darolt, wearing a light shirt, outdoors.'
-              }
-              width={96}
-              height={96}
-              className="abertura__retrato"
-              /* Está na primeira tela: carrega cedo, mas é pequena o bastante
-                 para não disputar banda com o LCP. */
-              loading="eager"
-              decoding="sync"
-            />
-          </picture>
-
-          <p className="abertura__apoio">
-            {idioma === 'pt' ? (
-              <>
-                Sou <strong>Pedro Augusto Darolt</strong>, {t.cargo.toLowerCase()} e estagiário de
-                desenvolvimento na Norte Geradores desde junho de 2026, em Benevides, Pará. Construo
-                aplicações web de ponta a ponta: interface, API, banco e deploy. O que é público está
-                aqui com link para abrir e ler; o que é interno está aqui com empresa, período e número.
-              </>
-            ) : (
-              <>
-                I am <strong>Pedro Augusto Darolt</strong>, a {t.cargo.toLowerCase()} and development
-                intern at Norte Geradores since June 2026, in Benevides, Pará, Brazil. I build web
-                applications end to end: interface, API, database and deployment. What is public is here
-                with a link to open and read; what is internal is here with employer, period and number.
-              </>
-            )}
+    <>
+      <section className="abertura" id="topo" aria-labelledby="titulo-principal">
+        <div className="container abertura__conteudo" style={estiloHero}>
+          <p className="sobrancelha">
+            {idioma === 'pt'
+              ? 'ESTÁGIO OU JÚNIOR · CASTANHAL · BELÉM · REMOTO (UTC−3)'
+              : 'INTERN OR JUNIOR · CASTANHAL · BELÉM · REMOTE (UTC−3)'}
           </p>
+
+          <h1 id="titulo-principal" className="abertura__titulo">
+            {idioma === 'pt' ? 'Meu código roda em produção.' : 'My code runs in production.'}
+          </h1>
+
+          <div className="abertura__apresentacao">
+            <picture>
+              <source
+                type="image/avif"
+                srcSet={`${RETRATO['../assets/pedro.avif']}, ${RETRATO['../assets/pedro@2x.avif']} 2x`}
+              />
+              <img
+                src={RETRATO['../assets/pedro.webp']}
+                srcSet={`${RETRATO['../assets/pedro.webp']}, ${RETRATO['../assets/pedro@2x.webp']} 2x`}
+                alt={
+                  idioma === 'pt'
+                    ? 'Pedro Augusto Darolt, de camisa clara, ao ar livre.'
+                    : 'Pedro Augusto Darolt, wearing a light shirt, outdoors.'
+                }
+                width={88}
+                height={88}
+                className="abertura__retrato"
+                loading="eager"
+                decoding="sync"
+              />
+            </picture>
+
+            <p className="abertura__apoio">
+              {idioma === 'pt' ? (
+                <>
+                  Painéis de BI que a diretoria consulta, uma landing page que capta leads e
+                  automações que coletam dados públicos todo dia. Sou{' '}
+                  <strong>Pedro Augusto Darolt</strong>, estagiário de desenvolvimento na Norte
+                  Geradores desde junho de 2026, em Benevides, Pará.
+                </>
+              ) : (
+                <>
+                  BI dashboards leadership checks, a landing page that captures leads, and
+                  automations that pull public data every day. I am{' '}
+                  <strong>Pedro Augusto Darolt</strong>, a development intern at Norte Geradores
+                  since June 2026, in Benevides, Pará, Brazil.
+                </>
+              )}
+            </p>
+          </div>
+
+          <Marcadores
+            className="abertura__stack"
+            itens={['React', 'TypeScript', 'Node.js', 'Python/FastAPI', 'Linux']}
+          />
+
+          <div className="abertura__acoes">
+            <BotaoLink tipo="primario" href={publico(t.arquivoCurriculo)} download>
+              {t.ctaCurriculo}
+            </BotaoLink>
+            <BotaoLink
+              tipo="secundario"
+              href="https://pedrozxx.github.io/radar-licitacoes-pa/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {idioma === 'pt' ? 'Ver o Radar ↗' : 'See the Radar ↗'}
+            </BotaoLink>
+          </div>
         </div>
 
-        <Marcadores
-          className="abertura__stack"
-          itens={['React', 'TypeScript', 'Node.js', 'Python/FastAPI', 'Linux']}
-        />
+        <p className="abertura__dica" style={estiloHero} aria-hidden="true">
+          <span>{idioma === 'pt' ? 'role para entrar' : 'scroll to enter'}</span>
+          <span>↓</span>
+        </p>
+      </section>
 
-        {/* A régua de leituras. É este bloco que faz a assinatura sobreviver ao
-            celular: no colapso da margem, a procedência continua na tela. */}
-        <dl className="regua">
-          {LEITURAS.map((l) => (
-            <div className="regua__item" key={l.valor}>
-              <dt className="regua__rotulo mono">{l.rotulo[idioma]}</dt>
-              <dd className="regua__valor mono">{l.valor}</dd>
-              <dd className="regua__fonte mono">
-                {t.fonteDoDado}: {l.fonte[idioma]}
-              </dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="abertura__acoes">
-          <BotaoLink tipo="primario" href={publico(t.arquivoCurriculo)} download>
-            {t.ctaCurriculo}
-          </BotaoLink>
-          <BotaoLink
-            tipo="secundario"
-            href="https://pedrozxx.github.io/radar-licitacoes-pa/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {idioma === 'pt' ? 'Ver o Radar de Licitações ↗' : 'See the Radar de Licitações ↗'}
-          </BotaoLink>
-        </div>
-      </div>
-    </section>
+      <section className="passagem" aria-hidden="true">
+        <p className="passagem__texto display" style={estiloPassagem}>
+          {idioma === 'pt'
+            ? 'Em produção: BI, ferramentas internas, dados abertos.'
+            : 'In production: BI, internal tools, open data.'}
+        </p>
+      </section>
+    </>
   )
 }
