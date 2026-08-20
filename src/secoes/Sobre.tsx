@@ -81,16 +81,18 @@ export function Sobre({ idioma }: { readonly idioma: Idioma }) {
             Estudo Sistemas de Informação na UFPA, em Castanhal, e trabalho como estagiário de
             desenvolvimento na Norte Geradores. Comecei pelo front-end na Link Jr, empresa júnior, onde
             entreguei projetos em time, com Scrum, Kanban e revisão de código entre colegas. Hoje faço o
-            ciclo completo — interface, API, banco e servidor — e sustento o que coloco no ar. Português
-            nativo, inglês avançado.
+            ciclo completo — interface, API, banco e servidor — e sustento o que coloco no ar.
+            Português nativo. Sobre o inglês: esta página inteira também existe em inglês, a um
+            clique — é mais fácil conferir do que acreditar.
           </>
         ) : (
           <>
             I study Information Systems at UFPA, in Castanhal, and work as a development intern at Norte
             Geradores. I started on the front end at Link Jr, a junior enterprise, where I delivered
             projects in a team using Scrum, Kanban and peer code review. Today I handle the
-            full cycle — interface, API, database and server — and maintain what I put live. Native
-            Portuguese, advanced English.
+            full cycle — interface, API, database and server — and maintain what I put live.
+            Native Portuguese. As for English: you are reading it — this whole page exists in
+            English too, and checking beats claiming.
           </>
         )}
       </p>
