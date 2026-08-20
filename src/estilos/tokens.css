@@ -13,6 +13,58 @@
  * natureza, e o claro é que é a variante. O alternador vence nos dois sentidos.
  */
 
+/*
+ * As variáveis escritas a cada quadro são declaradas com `inherits: false`.
+ *
+ * Custom property comum é herdável: mudar uma obriga o navegador a reavaliar o
+ * estilo de todo descendente. Registradas assim, a invalidação para no elemento
+ * que recebeu a escrita — que é o que torna a animação por rAF viável numa
+ * página com sete cartões de imagem e cinco numerais contornados.
+ *
+ * O `initial-value` também garante que a página nasça num estado válido quando o
+ * JavaScript não roda: a barra cheia, o hero opaco, o trilho no começo.
+ */
+@property --progresso {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --trilho {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --trilho-avanco {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --hero-opacidade {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --hero-escala {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --hero-y {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --passagem-opacidade {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --passagem-y {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
 :root {
   /* --- cor: escuro (canônico) --- */
   --papel:            #05060A;
@@ -63,10 +115,6 @@
   --transicao: 0.18s var(--ease-gleasing);
   --entrada:   0.9s var(--ease-out-expo);
 
-  /* Escritas por requestAnimationFrame. Ficam aqui para existirem também quando
-     o JavaScript não roda — a página nasce num estado válido, nunca em branco. */
-  --progresso: 0;
-  --trilho: 0;
 
   color-scheme: dark light;
 }

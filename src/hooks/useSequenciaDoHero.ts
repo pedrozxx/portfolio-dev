@@ -1,45 +1,57 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 /**
- * A sequência de abertura: o título do hero apaga e encolhe conforme a pessoa
- * rola, e a linha seguinte entra por cima. É o gesto que define a direção — o
- * site não começa numa página, começa numa passagem.
+ * A sequência de abertura: o hero apaga e encolhe, a frase de passagem entra.
  *
- * Devolve 0→1 sobre a altura de uma tela. Lê apenas `scrollY` e
- * `innerHeight` — nunca a posição de um elemento. Ler posição de elemento a cada
- * quadro força o navegador a recalcular layout no meio da rolagem, que é o jeito
- * clássico de um efeito bonito engasgar a página.
- *
- * Com `prefers-reduced-motion`, devolve 0 e nunca instala o listener: o hero
- * fica parado e legível, que é o estado final e o estado base.
+ * Escreve as variáveis **em cada um dos dois elementos**, nunca no `:root` — ver
+ * `useProgressoDeLeitura` para a medição que motivou a regra. Devolve as duas
+ * referências.
  */
-export function useSequenciaDoHero(): number {
-  const [avanco, setAvanco] = useState(0)
-  const pendente = useRef(0)
+export function useSequenciaDoHero() {
+  const hero = useRef<HTMLDivElement | null>(null)
+  const passagem = useRef<HTMLParagraphElement | null>(null)
+  const dica = useRef<HTMLParagraphElement | null>(null)
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    let pendente = 0
+
     const medir = () => {
-      pendente.current = 0
+      pendente = 0
       const altura = window.innerHeight || 1
-      setAvanco(Math.min(1, Math.max(0, window.scrollY / altura)))
+      const avanco = Math.min(1, Math.max(0, window.scrollY / altura))
+
+      const saida = Math.min(1, avanco / 0.7)
+      const opacidade = String(1 - saida)
+      if (hero.current) {
+        hero.current.style.setProperty('--hero-opacidade', opacidade)
+        hero.current.style.setProperty('--hero-escala', String(1 - saida * 0.06))
+        hero.current.style.setProperty('--hero-y', `${saida * -40}px`)
+      }
+      if (dica.current) dica.current.style.setProperty('--hero-opacidade', opacidade)
+
+      if (passagem.current) {
+        const entrada = Math.min(1, Math.max(0, (avanco - 0.55) / 0.5))
+        passagem.current.style.setProperty('--passagem-opacidade', String(entrada))
+        passagem.current.style.setProperty('--passagem-y', `${(1 - entrada) * 32}px`)
+      }
     }
 
     const aoRolar = () => {
-      if (pendente.current) return
-      pendente.current = requestAnimationFrame(medir)
+      if (pendente) return
+      pendente = requestAnimationFrame(medir)
     }
 
     medir()
     window.addEventListener('scroll', aoRolar, { passive: true })
     window.addEventListener('resize', aoRolar, { passive: true })
     return () => {
-      if (pendente.current) cancelAnimationFrame(pendente.current)
+      if (pendente) cancelAnimationFrame(pendente)
       window.removeEventListener('scroll', aoRolar)
       window.removeEventListener('resize', aoRolar)
     }
   }, [])
 
-  return avanco
+  return { hero, passagem, dica }
 }

@@ -34,7 +34,7 @@ export function Contato({ idioma }: { readonly idioma: Idioma }) {
   return (
     <Capitulo
       id="contato"
-      numero="05"
+      numero="07"
       sobrancelha={idioma === 'pt' ? 'DISPONÍVEL · UTC−3' : 'AVAILABLE · UTC−3'}
       titulo={
         idioma === 'pt'

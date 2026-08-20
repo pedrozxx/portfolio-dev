@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import type { Idioma } from '../conteudo/projetos'
 import { textos } from '../i18n'
 import { publico } from '../caminhos'
@@ -16,34 +15,16 @@ import { useSequenciaDoHero } from '../hooks/useSequenciaDoHero'
  * hook devolve 0 e nada se move; o estado parado é o estado legível.
  */
 
-const RETRATO = import.meta.glob<string>('../assets/pedro*.{avif,webp}', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-})
-
 export function Abertura({ idioma }: { readonly idioma: Idioma }) {
   const t = textos(idioma)
-  const avanco = useSequenciaDoHero()
-
-  // O hero apaga na primeira meia tela; a passagem entra na segunda metade.
-  const saida = Math.min(1, avanco / 0.7)
-  const estiloHero: CSSProperties = {
-    '--hero-opacidade': String(1 - saida),
-    '--hero-escala': String(1 - saida * 0.06),
-    '--hero-y': `${saida * -40}px`,
-  } as CSSProperties
-
-  const entrada = Math.min(1, Math.max(0, (avanco - 0.55) / 0.5))
-  const estiloPassagem: CSSProperties = {
-    '--passagem-opacidade': String(entrada),
-    '--passagem-y': `${(1 - entrada) * 32}px`,
-  } as CSSProperties
+  // O hook escreve as variáveis em CADA elemento, nunca na raiz: escrita no
+  // :root invalida o estilo da árvore inteira a cada quadro.
+  const { hero, passagem, dica } = useSequenciaDoHero()
 
   return (
     <>
       <section className="abertura" id="topo" aria-labelledby="titulo-principal">
-        <div className="container abertura__conteudo" style={estiloHero}>
+        <div className="container abertura__conteudo" ref={hero}>
           <p className="sobrancelha">
             {idioma === 'pt'
               ? 'ESTÁGIO OU JÚNIOR · CASTANHAL · BELÉM · REMOTO (UTC−3)'
@@ -55,27 +36,6 @@ export function Abertura({ idioma }: { readonly idioma: Idioma }) {
           </h1>
 
           <div className="abertura__apresentacao">
-            <picture>
-              <source
-                type="image/avif"
-                srcSet={`${RETRATO['../assets/pedro.avif']}, ${RETRATO['../assets/pedro@2x.avif']} 2x`}
-              />
-              <img
-                src={RETRATO['../assets/pedro.webp']}
-                srcSet={`${RETRATO['../assets/pedro.webp']}, ${RETRATO['../assets/pedro@2x.webp']} 2x`}
-                alt={
-                  idioma === 'pt'
-                    ? 'Pedro Augusto Darolt, de camisa clara, ao ar livre.'
-                    : 'Pedro Augusto Darolt, wearing a light shirt, outdoors.'
-                }
-                width={88}
-                height={88}
-                className="abertura__retrato"
-                loading="eager"
-                decoding="sync"
-              />
-            </picture>
-
             <p className="abertura__apoio">
               {idioma === 'pt' ? (
                 <>
@@ -115,14 +75,14 @@ export function Abertura({ idioma }: { readonly idioma: Idioma }) {
           </div>
         </div>
 
-        <p className="abertura__dica" style={estiloHero} aria-hidden="true">
+        <p className="abertura__dica" ref={dica} aria-hidden="true">
           <span>{idioma === 'pt' ? 'role para entrar' : 'scroll to enter'}</span>
           <span>↓</span>
         </p>
       </section>
 
       <section className="passagem" aria-hidden="true">
-        <p className="passagem__texto display" style={estiloPassagem}>
+        <p className="passagem__texto display" ref={passagem}>
           {idioma === 'pt'
             ? 'Em produção: BI, ferramentas internas, dados abertos.'
             : 'In production: BI, internal tools, open data.'}

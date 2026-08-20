@@ -187,6 +187,17 @@ p.marcadores,
   background: var(--acento);
 }
 
+/*
+ * O numeral do capítulo dentro da sobrancelha.
+ *
+ * A sobrancelha deixou de ser `flex` quando o fio saiu do fluxo, e o `gap` que
+ * separava o numeral do texto sumiu junto: saía "04PROJETOS PUBLICADOS". Aqui a
+ * separação é margem, que funciona em contexto inline.
+ */
+.capitulo__numero {
+  margin-inline-end: 0.9em;
+}
+
 @media (max-width: 599px) {
   .sobrancelha {
     letter-spacing: 0.16em;

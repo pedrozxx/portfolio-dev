@@ -71,7 +71,7 @@ export function Sobre({ idioma }: { readonly idioma: Idioma }) {
   return (
     <Capitulo
       id="sobre"
-      numero="04"
+      numero="06"
       sobrancelha={idioma === 'pt' ? 'STACK · FORMAÇÃO · IDIOMAS' : 'STACK · EDUCATION · LANGUAGES'}
       titulo={t.secaoSobre}
     >

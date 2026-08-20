@@ -362,7 +362,6 @@ a {
 .abertura__conteudo {
   opacity: var(--hero-opacidade, 1);
   transform: scale(var(--hero-escala, 1)) translate3d(0, var(--hero-y, 0px), 0);
-  will-change: transform, opacity;
 }
 
 .abertura__titulo {
@@ -372,20 +371,17 @@ a {
      display: o til de "PRODUÇÃO" e o agudo de "CÓDIGO" saem da caixa e encostam
      na linha de cima. */
   line-height: 1.06;
+  /* Menor que o display máximo: com o retrato fora do hero, o título ganhou a
+     tela toda e a 7rem passava a ocupar três linhas cheias, empurrando o
+     parágrafo e os botões para fora da primeira dobra. */
+  font-size: clamp(2.25rem, 6.2vw, 4.75rem);
+  max-inline-size: 18ch;
 }
 
 .abertura__apresentacao {
   display: flex;
   gap: var(--e5);
   align-items: flex-start;
-}
-.abertura__retrato {
-  border-radius: var(--raio);
-  flex: 0 0 auto;
-  inline-size: 88px;
-  block-size: 88px;
-  object-fit: cover;
-  border: 1px solid var(--fio-estrutural);
 }
 .abertura__stack {
   margin-block-start: var(--e5);
@@ -493,6 +489,15 @@ a {
   gap: var(--e6);
   padding-inline-end: var(--e6);
 }
+/*
+ * Contorno de texto, alternando com palavras cheias — é assim na referência, e é
+ * o que dá profundidade à faixa sem acender mais uma cor.
+ *
+ * Registro de um erro meu: cheguei a trocar o contorno por cor sólida achando
+ * que ele custava caro. Não custa — o "1 fps" que eu tinha medido era artefato
+ * de medir `requestAnimationFrame` numa aba em segundo plano, onde o Chrome
+ * simplesmente congela o rAF. O contorno voltou.
+ */
 .marquee__item {
   font-family: var(--fonte-display);
   font-weight: 700;
@@ -557,6 +562,10 @@ a {
   -webkit-text-stroke: 1px var(--fio);
   pointer-events: none;
   user-select: none;
+  /* Estático e isolado: `contain` impede que a repintura dele arraste o resto
+     da seção junto. Contorno de texto é caro; contorno de texto que reflete em
+     vizinho é caro duas vezes. */
+  contain: paint;
 }
 
 .capitulo__titulo {
@@ -600,7 +609,27 @@ a {
   }
 }
 
-/* ---------- radar (o carro-chefe) ---------- */
+/* ---------- capítulo de capacidade ---------- */
+
+.capacidade__interno {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e4);
+  min-block-size: 62svh;
+  align-content: center;
+}
+.capacidade__titulo {
+  margin-block: var(--e4) var(--e2);
+  max-inline-size: 14ch;
+}
+.capacidade__texto {
+  margin-block-end: var(--e3);
+}
+.capacidade__stack {
+  color: var(--tinta-fraca);
+}
+
+/* ---------- radar (herdado, agora só no cartão) ---------- */
 
 .radar {
   display: grid;
@@ -683,28 +712,81 @@ a {
 }
 .trilho__palco {
   position: sticky;
-  /* Desconta o cabeçalho fixo. Com `top: 0` o título do capítulo ficava por
-     baixo da barra e o rodapé do trilho era cortado pela borda inferior. */
+  /* Desconta o cabeçalho fixo. Com `top: 0` o título ficava por baixo da barra
+     e o rodapé do trilho era cortado pela borda inferior. */
   inset-block-start: var(--altura-cabecalho);
   block-size: calc(100svh - var(--altura-cabecalho));
+  /*
+    Duas colunas: o bloco de texto fica parado à esquerda enquanto os cartões
+    passam à direita. A pista NÃO respeita o contêiner — ela sangra até a borda
+    da tela, que é o que faz o próximo cartão aparecer cortado e anunciar que há
+    mais coisa vindo.
+  */
+  display: grid;
+  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--e7);
+  padding-inline-start: max(
+    var(--recuo-pagina),
+    calc((100vw - var(--largura-maxima)) / 2 + var(--recuo-pagina))
+  );
+}
+
+.trilho__texto {
+  min-inline-size: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: var(--e4);
+}
+.trilho__titulo {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.04;
+  font-size: clamp(2rem, 4.6vw, 3.75rem);
+  color: var(--tinta-forte);
+}
+.trilho__resumo {
+  color: var(--tinta);
+}
+.trilho__dica {
+  color: var(--tinta-fraca);
+  font-size: 0.8125rem;
+  letter-spacing: var(--tracking-sobrancelha);
+  text-transform: uppercase;
+}
+.trilho__seta {
+  color: var(--acento);
+  display: inline-block;
+  animation: pulsar 2.4s var(--ease-in-out-cubic) infinite;
+}
+
+.trilho__pista {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
   gap: var(--e5);
 }
 
-.trilho__cabeca {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--e5);
-  flex-wrap: wrap;
-}
-/* Item de flex nasce com `min-width: auto` e se recusa a encolher abaixo do
-   conteúdo mínimo. Medido no zoom de texto a 200%: "PROJETOS" em Orbitron a
-   64px levava a página a 437px numa tela de 390. */
-.trilho__cabeca > * {
-  min-inline-size: 0;
+/*
+ * O recorte acontece AQUI, na pista, e não na lista.
+ *
+ * O `transform` move a caixa inteira da lista para a esquerda — e `overflow` na
+ * própria lista clipa o conteúdo dela, não a caixa. O resultado media: os
+ * cartões passavam por cima do bloco de texto da esquerda e o cobriam. Clipando
+ * na pista, a lista desliza por dentro de uma janela que não sai do lugar.
+ *
+ * `overflow-x: clip` com `overflow-y: visible` — nunca `hidden`, que criaria um
+ * contexto de rolagem e mataria o `position: sticky` do palco.
+ *
+ * O `:has()` liga o recorte só enquanto o deslizamento está ativo. Quando o foco
+ * entra na lista e o deslizamento desliga, a pista volta a não clipar e a lista
+ * volta a rolar nativamente — que é o que leva o cartão focado à vista.
+ */
+.trilho__pista:has(.trilho__lista[data-desliza="sim"]) {
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .trilho__lista {
@@ -723,9 +805,10 @@ a {
 /* Com o efeito ligado, quem move é o transform; a rolagem nativa fica de
    reserva para o teclado. */
 .trilho__lista[data-desliza="sim"] {
-  overflow-x: clip;
+  /* A lista não clipa nada: quem clipa é a pista. Aqui o overflow fica visível
+     para os cartões continuarem desenhados enquanto atravessam a janela. */
+  overflow-x: visible;
   transform: translate3d(calc(var(--trilho) * -1px), 0, 0);
-  will-change: transform;
 }
 
 .cartao {
@@ -752,6 +835,12 @@ a {
 .cartao__captura img {
   border: 0;
   border-radius: 0;
+}
+.cartao__destinos {
+  display: flex;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  margin-block-start: var(--e2);
 }
 .cartao__corpo {
   padding: var(--e5);
@@ -841,6 +930,16 @@ a {
 
 /* Abaixo de 768px o efeito não existe: lista vertical comum. Prender a tela num
    aparelho onde a rolagem é o único gesto disponível é prender a pessoa. */
+@media (max-width: 1023px) {
+  /* Abaixo de 1024px o texto vai para cima da pista: duas colunas nessa largura
+     deixariam a coluna de texto com menos de 20 caracteres por linha. */
+  .trilho__palco {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: var(--e5);
+  }
+}
+
 @media (max-width: 767px) {
   .trilho {
     block-size: auto !important;
@@ -848,6 +947,10 @@ a {
   .trilho__palco {
     position: static;
     block-size: auto;
+    padding-inline: var(--recuo-pagina);
+  }
+  .trilho__dica {
+    display: none;
   }
   .trilho__lista,
   .trilho__lista[data-desliza="sim"] {

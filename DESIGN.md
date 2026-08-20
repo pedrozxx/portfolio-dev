@@ -227,20 +227,34 @@ que recebe foco. **Nenhum container que hospede elemento focável pode ter
 | --- | --- | --- | --- |
 | — | Abertura + passagem | Opening + transition | Nível pretendido, lugar, e o diferencial numa frase |
 | — | Faixa de tecnologias | Technology band | Amplitude real da stack |
-| 01 | Radar de Licitações PA | Radar de Licitações PA | Julgamento de engenharia sob restrição real |
-| 02 | Projetos (trilho) | Projects (rail) | Frequência de publicação e higiene: o link funciona hoje |
-| 03 | Experiência | Experience | O "roda em produção" tem empregador, cidade, período e número |
-| 04 | Sobre | About | Stack, formação em curso, idiomas |
-| 05 | Contato | Contact | É trivial chamá-lo, e ele diz o que procura |
+| 01 | Aplicações web | Web applications | Ponta a ponta: interface, API, banco e deploy |
+| 02 | IA em produção | AI in production | Integração de Anthropic e Gemini com alçada e registro |
+| 03 | Sites e landing pages | Websites & landing pages | Página de captação no ar, e a falha de rate limiting corrigida |
+| 04 | Projetos (trilho) | Projects (rail) | Frequência de publicação e higiene: o link funciona hoje |
+| 05 | Experiência | Experience | O "roda em produção" tem empregador, cidade, período e número |
+| 06 | Sobre | About | Stack, formação em curso, idiomas |
+| 07 | Contato | Contact | É trivial chamá-lo, e ele diz o que procura |
 | — | Colofão | Colophon | As medidas da própria página, e a origem da direção |
+
+### 6.1 Os três capítulos de capacidade
+
+São o equivalente às três seções de serviço do site de referência, com uma
+diferença que importa: lá são **ofertas de um freelancer**; aqui são **capacidades
+de um candidato**. Nenhuma promete trabalho — todas descrevem trabalho feito.
+
+**O terceiro capítulo é "sites e landing pages", não "e-commerce".** A referência
+tem e-commerce; o dossiê do Pedro não tem um único projeto de loja, checkout ou
+pagamento. Copiar o rótulo obrigaria a inventar capacidade, que é exatamente o
+defeito que estoura na primeira entrevista técnica. Fidelidade à referência para
+no ponto em que ela exigiria mentir.
+
+**O carro-chefe não tem mais capítulo próprio: entra como cartão 01 do trilho.**
+As quatro decisões de engenharia dele não cabem num cartão e saíram da página —
+continuam inteiras no README, a um clique. É a troca que esta direção cobra.
 
 O `<h2>` é **sempre a palavra comum** — *Experiência*, *Projetos*, *Sobre*. Se o
 recrutador não achar "Experiência" num `Ctrl+F`, ou o ATS não indexar, a direção falhou
 por mais bonita que esteja.
-
-**O carro-chefe não entra no trilho.** Enterrar num efeito a única prova que o
-recrutador pode abrir e inspecionar seria trocar a peça mais forte da página por uma
-animação.
 
 ---
 
@@ -259,6 +273,25 @@ Movem-se seis coisas. Só `transform`, `opacity` e `color` — nunca `width`, `h
 5. **Trilho horizontal** (§8).
 6. **Estados de interação:** 0,18s em cor, borda e sublinhado; `:active` recua 1px.
 
+### 7.1 Rolagem contínua nunca vira estado do React
+
+Os valores derivados da rolagem são escritos **direto em custom properties**, por
+`requestAnimationFrame`, e o CSS os lê num `transform`. Guardá-los em `useState`
+re-renderizaria a árvore a cada quadro — sete cartões com imagem, sessenta vezes por
+segundo. Estado do React é para o que muda em **passos discretos**, como o índice do
+cartão corrente: seis vezes numa página inteira, não sessenta por segundo.
+
+E a escrita vai no **menor elemento que usa a variável**, nunca no `:root`: custom
+property no elemento raiz é herdável, e cada escrita invalidaria o estilo da árvore
+toda. As variáveis animadas são registradas com `@property { inherits: false }`, o que
+para a invalidação no elemento que recebeu a escrita.
+
+> **Nota de método.** Cheguei a medir "1 fps" nesta página e a mudar CSS por causa
+> disso. A medição estava errada: `requestAnimationFrame` não dispara em aba em
+> segundo plano, e a aba de teste estava com `visibilityState: "hidden"`. As mudanças
+> acima continuam certas por mérito próprio; o contorno de texto do marquee, que eu
+> havia removido, voltou. Medição também precisa ser verificada.
+
 **`prefers-reduced-motion: reduce` desliga tudo**, e o trilho nem sequer prende. Nenhum
 conteúdo depende de animação para existir, em nenhum dos dois modos.
 
@@ -266,8 +299,15 @@ conteúdo depende de animação para existir, em nenhum dos dois modos.
 
 ## 8. O trilho horizontal, e as quatro garantias
 
-A seção tem **3 telas** de altura; o miolo fica `sticky` e os cartões deslizam por
-`translate3d` movido pela fração de rolagem.
+A seção tem **4 telas** de altura. O miolo fica `sticky` em duas colunas: o bloco de
+texto parado à esquerda, a pista à direita sangrando até a borda da tela.
+
+**O recorte acontece na pista, não na lista.** O `transform` move a caixa inteira da
+lista, e `overflow` na própria lista clipa o conteúdo dela, não a caixa: medido, os
+cartões passavam por cima do bloco de texto e o cobriam. A pista recebe
+`overflow-x: clip` com `overflow-y: visible` — nunca `hidden`, que criaria contexto de
+rolagem e mataria o `sticky` do palco — e só enquanto o deslizamento está ativo, via
+`:has()`.
 
 1. **Teclado.** Quando o foco entra na lista, o deslizamento **desliga**: o `transform`
    sai, `overflow-x` volta a `auto`, e um efeito traz o elemento focado à vista com

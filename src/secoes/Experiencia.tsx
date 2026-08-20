@@ -21,7 +21,7 @@ export function Experiencia({ idioma }: { readonly idioma: Idioma }) {
   return (
     <Capitulo
       id="experiencia"
-      numero="03"
+      numero="05"
       sobrancelha={idioma === 'pt' ? 'EMPREGADOR · CIDADE · PERÍODO' : 'EMPLOYER · CITY · PERIOD'}
       titulo={t.secaoExperiencia}
       semMovimento

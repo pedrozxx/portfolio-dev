@@ -1,26 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 /**
- * Progresso de leitura, de 0 a 1.
+ * Progresso de leitura, escrito em `--progresso` **no próprio elemento da barra**.
  *
- * Lê só `scrollY` e a altura do documento — nunca a posição de elementos. Ler
- * posição de elemento a cada quadro força o navegador a recalcular layout no meio
- * da rolagem, que é o jeito clássico de um indicador bonito engasgar a página.
+ * Escrever no `:root` parece inofensivo e não é: uma custom property no elemento
+ * raiz é herdável, então cada escrita invalida o estilo de toda a árvore. Feito a
+ * cada quadro, com sete cartões de imagem e cinco numerais contornados na
+ * página, isso travou o renderizador do Chrome — `Runtime.evaluate` expirando
+ * em 45 s, tanto em desenvolvimento quanto no build de produção.
  *
- * O valor sai como custom property e o CSS pinta com `transform: scaleY()`, que
- * roda na composição e não repinta nada.
+ * A regra que fica: **custom property animada mora no menor elemento que a usa.**
  */
-export function useProgressoDeLeitura(): number {
-  const [progresso, setProgresso] = useState(0)
+export function useProgressoDeLeitura(): React.RefObject<HTMLDivElement | null> {
+  const barra = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const raiz = document.documentElement
     let pendente = 0
 
     const medir = () => {
       pendente = 0
-      const rolavel = document.documentElement.scrollHeight - window.innerHeight
-      // Página curta demais para rolar: progresso cheio, não divisão por zero.
-      setProgresso(rolavel <= 0 ? 1 : Math.min(1, Math.max(0, window.scrollY / rolavel)))
+      const el = barra.current
+      if (!el) return
+      const rolavel = raiz.scrollHeight - window.innerHeight
+      const p = rolavel <= 0 ? 1 : Math.min(1, Math.max(0, window.scrollY / rolavel))
+      el.style.setProperty('--progresso', String(p))
     }
 
     const aoRolar = () => {
@@ -38,5 +44,5 @@ export function useProgressoDeLeitura(): number {
     }
   }, [])
 
-  return progresso
+  return barra
 }

@@ -32,9 +32,14 @@ import { useEffect, useRef, useState } from 'react'
 interface Retorno {
   /** Referência da seção alta que provoca a rolagem. */
   readonly secao: React.RefObject<HTMLElement | null>
-  /** 0 a 1: quanto do trilho já passou. */
-  readonly avanco: number
-  /** Índice do cartão em foco, para o contador "03 / 06". */
+  /**
+   * Índice do cartão corrente, para o contador "03 / 07".
+   *
+   * É o ÚNICO valor deste hook que vira estado do React — porque muda em passos
+   * discretos, seis vezes numa página inteira. O avanço contínuo vai direto para
+   * `--trilho` em custom property: guardá-lo em `useState` re-renderizava sete
+   * cartões com imagem a cada quadro e derrubou a página para 1 fps.
+   */
   readonly indice: number
   /** Liga a altura extra e o `sticky`. `false` no celular e sem JS. */
   readonly ativo: boolean
@@ -46,7 +51,7 @@ interface Retorno {
 
 export function useTrilhoHorizontal(quantidade: number): Retorno {
   const secao = useRef<HTMLElement | null>(null)
-  const [avanco, setAvanco] = useState(0)
+  const [indice, setIndice] = useState(0)
   const [ativo, setAtivo] = useState(false)
   const [focado, setFocado] = useState(false)
   const recemFocado = useRef<HTMLElement | null>(null)
@@ -71,6 +76,7 @@ export function useTrilhoHorizontal(quantidade: number): Retorno {
     if (!desliza) return
 
     let pendente = 0
+    let ultimoIndice = -1
 
     const medir = () => {
       pendente = 0
@@ -80,11 +86,29 @@ export function useTrilhoHorizontal(quantidade: number): Retorno {
       const r = el.getBoundingClientRect()
       // Quanto a seção pode rolar antes de o fim dela alcançar o fim da tela.
       const percurso = el.offsetHeight - window.innerHeight
-      if (percurso <= 0) {
-        setAvanco(0)
-        return
+      const avanco = percurso <= 0 ? 0 : Math.min(1, Math.max(0, -r.top / percurso))
+
+      /*
+       * Escrita direta no CSS, e no MENOR elemento que usa cada variável: a
+       * lista para `--trilho`, a barra para `--trilho-avanco`. Escrever na
+       * seção — ou pior, no `:root` — invalidaria o estilo dos sete cartões (ou
+       * da árvore inteira) a cada quadro, e foi isso que travou o renderizador.
+       */
+      const pista = el.querySelector<HTMLElement>('.trilho__lista')
+      if (pista) {
+        const largura = Math.max(0, pista.scrollWidth - pista.clientWidth)
+        pista.style.setProperty('--trilho', String(avanco * largura))
       }
-      setAvanco(Math.min(1, Math.max(0, -r.top / percurso)))
+      const barra = el.querySelector<HTMLElement>('.trilho__barra')
+      if (barra) barra.style.setProperty('--trilho-avanco', String(avanco))
+
+      // O índice muda em passos: só aí vale acordar o React.
+      const novo =
+        quantidade > 0 ? Math.min(quantidade - 1, Math.round(avanco * (quantidade - 1))) : 0
+      if (novo !== ultimoIndice) {
+        ultimoIndice = novo
+        setIndice(novo)
+      }
     }
 
     const aoRolar = () => {
@@ -100,7 +124,7 @@ export function useTrilhoHorizontal(quantidade: number): Retorno {
       window.removeEventListener('scroll', aoRolar)
       window.removeEventListener('resize', aoRolar)
     }
-  }, [desliza])
+  }, [desliza, quantidade])
 
   /*
    * Uma vez desligado, fica desligado pelo resto da visita.
@@ -136,8 +160,6 @@ export function useTrilhoHorizontal(quantidade: number): Retorno {
     el.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' })
   }, [focado])
 
-  const indice =
-    quantidade > 0 ? Math.min(quantidade - 1, Math.round(avanco * (quantidade - 1))) : 0
 
-  return { secao, avanco, indice, ativo, desliza, aoFocar }
+  return { secao, indice, ativo, desliza, aoFocar }
 }
