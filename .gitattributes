@@ -1,0 +1,14 @@
+# O repositório é a fonte da verdade: tudo nasce com LF, inclusive quando editado
+# no Windows. Sem isto, a Action que roda em Linux vê o arquivo diferente do que
+# está na máquina do autor, e um diff inteiro aparece só por causa de fim de linha.
+* text=auto eol=lf
+
+# Binário: nunca normalizar, ou o arquivo corrompe.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.pdf binary
+*.woff  binary
+*.woff2 binary

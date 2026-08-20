@@ -1,0 +1,774 @@
+/*
+ * Componentes. DESIGN.md §5.
+ *
+ * Duas regras transversais valem em tudo aqui:
+ *   1. Nada que contenha texto recebe altura fixa em px — só min-height e
+ *      padding. É o que garante sobreviver ao zoom de 200% e ao inglês, que é
+ *      mais longo que o português.
+ *   2. Nenhum container que hospede elemento focável tem overflow: hidden —
+ *      é exatamente o que recorta o anel de foco no site antigo.
+ */
+
+/* ---------- skip link ---------- */
+
+.pular {
+  position: absolute;
+  inset-block-start: var(--e2);
+  inset-inline-start: var(--e2);
+  z-index: 100;
+  padding: var(--e3) var(--e4);
+  background: var(--acento);
+  color: var(--acento-contraste);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  border-radius: var(--raio);
+  text-decoration: none;
+  /* Sai da tela por transform, não por display none: assim continua focável. */
+  transform: translateY(calc(-100% - var(--e4)));
+  transition: transform var(--transicao);
+}
+.pular:focus {
+  transform: translateY(0);
+}
+
+/* ---------- cabeçalho ---------- */
+
+.cabecalho {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 50;
+  /* Fundo sólido, sem blur: blur sobre texto derruba o contraste medido. */
+  background: var(--papel);
+  border-block-end: 1px solid var(--fio-estrutural);
+}
+
+.cabecalho__interno {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  min-block-size: 56px;
+  padding-block: var(--e2);
+  /*
+    Quebra sempre que precisar. O que impede a colisao do desktop nao e o
+    `nowrap` — e o `flex: 0 0 auto` do <nav>, que o proibe de encolher. Com
+    `nowrap` a barra nao refluia no zoom de texto a 200% e passava da borda em
+    1280, 1366 e 1440; com quebra livre ela vira duas linhas, que e o certo
+    quando o texto dobra de tamanho.
+  */
+  flex-wrap: wrap;
+  row-gap: var(--e2);
+}
+
+.cabecalho__marca {
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--tinta);
+  text-decoration: none;
+  /* Sem `nowrap`: no zoom de texto a 200% a marca sozinha passava da borda. */
+}
+.cabecalho__marca:hover {
+  color: var(--acento);
+}
+
+.cabecalho__nav {
+  margin-inline-end: auto;
+  /*
+    `flex: 0 0 auto` e obrigatorio aqui. Com `min-inline-size: 0` o <nav>
+    encolhia para 518px enquanto a lista dentro dele continuava com a largura
+    real — e, como um container que hospeda foco nao pode ter `overflow:
+    hidden`, o excedente vazava por cima do alternador de idioma. Medido no
+    navegador: "05 Contato" escrito por cima de "PT · EN". A largura total cabe
+    (187 + 518 + 367 = 1.072 num contêiner de 1.152); o que faltava era proibir
+    o encolhimento.
+  */
+  flex: 0 0 auto;
+}
+
+.cabecalho__lista {
+  display: flex;
+  gap: var(--e4);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.cabecalho__lista--vertical {
+  flex-direction: column;
+  gap: var(--e3);
+  padding-block: var(--e4);
+}
+
+.cabecalho__ancora {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-block-size: var(--alvo);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  letter-spacing: var(--tracking-rotulo);
+  color: var(--tinta-fraca);
+  text-decoration: none;
+  border-block-end: 2px solid transparent;
+  /* "02 Experiência" a 32px em mono passa de 340px: no zoom de texto a 200%
+     numa tela de 320 o proprio item de menu estourava a pagina. */
+  flex-wrap: wrap;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  transition: color var(--transicao), border-color var(--transicao);
+}
+.cabecalho__ancora:hover {
+  color: var(--acento);
+}
+.cabecalho__ancora:active {
+  transform: translateY(1px);
+}
+/* Dois portadores no capítulo corrente: o fio E o aria-current. */
+.cabecalho__ancora[aria-current='true'] {
+  color: var(--tinta);
+  border-block-end-color: var(--acento);
+}
+.cabecalho__numero {
+  color: var(--acento);
+}
+
+.cabecalho__menu {
+  display: none;
+  margin-inline-end: auto;
+}
+.cabecalho__menu > summary {
+  min-block-size: var(--alvo);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--tinta);
+}
+
+.cabecalho__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+}
+
+.alternador a,
+.alternador span {
+  color: var(--tinta-fraca);
+  text-decoration: none;
+}
+.alternador a {
+  min-block-size: var(--alvo);
+  display: inline-flex;
+  align-items: center;
+}
+.alternador a:hover {
+  color: var(--acento);
+}
+.alternador__ativo {
+  color: var(--tinta);
+  font-weight: 500;
+}
+
+.alternador__tema {
+  background: none;
+  border: 0;
+  padding: var(--e2) 0;
+  min-block-size: var(--alvo);
+  color: var(--tinta-fraca);
+  cursor: pointer;
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  letter-spacing: var(--tracking-rotulo);
+}
+.alternador__tema:hover {
+  color: var(--acento);
+}
+.alternador__tema:active {
+  transform: translateY(1px);
+}
+
+/*
+ * Qual rótulo aparece segue a MESMA cascata de três estados dos tokens
+ * (DESIGN.md §2.4). Se divergir dela, o botão passa a dizer "escuro" numa
+ * página que já está escura — que é pior do que não ter botão.
+ */
+.tema--no-escuro {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro']) .tema--no-claro {
+    display: none;
+  }
+  :root:not([data-tema='claro']) .tema--no-escuro {
+    display: inline;
+  }
+}
+:root[data-tema='escuro'] .tema--no-claro {
+  display: none;
+}
+:root[data-tema='escuro'] .tema--no-escuro {
+  display: inline;
+}
+:root[data-tema='claro'] .tema--no-claro {
+  display: inline;
+}
+:root[data-tema='claro'] .tema--no-escuro {
+  display: none;
+}
+
+/* Medido: marca 170 + capitulos 554 + acoes 340 + gaps = mais que os 1.152px do
+   contêiner. Abaixo de 1100px os capitulos viram <details> nativo em vez de
+   colidirem com o botao. */
+@media (max-width: 1099px) {
+  .cabecalho__nav {
+    display: none;
+  }
+  .cabecalho__menu {
+    display: block;
+  }
+
+}
+
+@media (max-width: 767px) {
+  /*
+    Sem `sticky` no celular: em duas ou três linhas a barra comeria um quarto da
+    tela em toda rolagem. O CTA continua ao alcance — ele se repete na abertura
+    e no capítulo de contato.
+  */
+  .cabecalho {
+    position: static;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --recuo-pagina: 1rem;
+  }
+}
+
+/* ---------- botão ---------- */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  min-block-size: var(--alvo);
+  padding-inline: var(--e5);
+  padding-block: var(--e2);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  font-weight: 500;
+  letter-spacing: var(--tracking-rotulo);
+  text-decoration: none;
+  text-align: center;
+  border-radius: var(--raio-pilula);
+  /* No zoom de texto a 200% o rotulo dobra e o recuo interno em rem dobra junto:
+     sem teto, o botao sozinho passava dos 320px de tela. */
+  max-inline-size: 100%;
+  transition: background-color var(--transicao), border-color var(--transicao),
+    color var(--transicao);
+}
+.botao:active {
+  transform: translateY(1px);
+}
+
+.botao--primario {
+  background: var(--acento);
+  color: var(--acento-contraste);
+  border: 1px solid var(--acento);
+}
+.botao--primario:hover {
+  filter: brightness(1.08);
+}
+
+.botao--secundario {
+  background: transparent;
+  color: var(--tinta);
+  border: 1px solid var(--fio-estrutural);
+}
+.botao--secundario:hover {
+  border-color: var(--acento);
+  color: var(--acento);
+}
+
+/* ---------- links ---------- */
+
+a {
+  color: var(--acento);
+}
+
+.radar__destinos a,
+.projeto__destinos a,
+.projetos__fecho a,
+.radar__leia a,
+.contato__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-block-size: var(--alvo);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  letter-spacing: var(--tracking-rotulo);
+  color: var(--acento);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  /* "pedrocod.dev@gmail.com" a 32px em mono passa de 420px. Sem permissao para
+     quebrar, um endereco de e-mail sozinho estoura a pagina no zoom de 200%. */
+  flex-wrap: wrap;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  transition: text-underline-offset var(--transicao);
+}
+.radar__destinos a:hover,
+.projeto__destinos a:hover,
+.projetos__fecho a:hover,
+.radar__leia a:hover,
+.contato__link:hover {
+  text-underline-offset: 5px;
+}
+
+.radar__destinos a:active,
+.projeto__destinos a:active,
+.contato__link:active {
+  transform: translateY(1px);
+}
+
+/* ---------- abertura ---------- */
+
+.abertura {
+  padding-block: var(--e8) var(--e7);
+  min-block-size: 88svh;
+  display: flex;
+  align-items: center;
+}
+.abertura__titulo {
+  margin-block: var(--e5) var(--e6);
+  /* Sem trava em ch: `text-wrap: balance` so consegue equilibrar as linhas se
+     tiver a largura toda para distribuir. Com 20ch ele ficava sem folga e a
+     segunda linha saia muito mais longa que a primeira. */
+  max-inline-size: 22ch;
+}
+
+.abertura__apresentacao {
+  display: flex;
+  gap: var(--e5);
+  align-items: flex-start;
+}
+.abertura__retrato {
+  border-radius: var(--raio);
+  flex: 0 0 auto;
+  inline-size: 96px;
+  block-size: 96px;
+  object-fit: cover;
+}
+.abertura__stack {
+  margin-block-start: var(--e5);
+}
+
+.regua {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  margin-block: var(--e7);
+  border-block-start: 1px solid var(--fio-estrutural);
+}
+.regua__item {
+  padding: var(--e5) var(--e5) var(--e5) 0;
+  border-inline-end: 1px solid var(--fio);
+}
+.regua__item:last-child {
+  border-inline-end: 0;
+}
+.regua__rotulo {
+  color: var(--tinta-fraca);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-rotulo);
+  font-size: var(--mono-base);
+}
+.regua__valor {
+  margin: var(--e2) 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  color: var(--tinta);
+  line-height: 1.1;
+}
+.regua__fonte {
+  color: var(--tinta-fraca);
+  font-weight: 400;
+  margin: 0;
+}
+
+.abertura__acoes {
+  display: flex;
+  gap: var(--e4);
+  flex-wrap: wrap;
+}
+
+/* ---------- capítulo ---------- */
+
+.capitulo {
+  padding-block: var(--e8);
+  border-block-start: 1px solid var(--fio);
+}
+.capitulo__titulo {
+  margin-block: var(--e4) var(--e6);
+}
+.capitulo__numero {
+  color: var(--acento);
+}
+
+/* ---------- radar ---------- */
+
+.radar {
+  display: grid;
+  grid-template-columns: [texto] minmax(0, 1fr) [captura] minmax(0, 22rem);
+  gap: var(--e6);
+  align-items: start;
+}
+/*
+  A captura vem ANTES do texto no DOM — logo depois do <h2>, que e onde a prova
+  visual ajuda quem le. No desktop o grid a manda para a coluna da direita por
+  colocacao explicita, nao por `order`: DESIGN.md §8.7 proibe `order` justamente
+  para a ordem visual nunca divergir da ordem de leitura, e colocacao nomeada de
+  grid nao inverte nada — so escolhe a coluna.
+*/
+.radar__captura { grid-column: captura; }
+.radar__texto { grid-column: texto; grid-row: 1; }
+.radar__resumo {
+  margin-block-end: var(--e4);
+}
+.radar__destinos {
+  display: flex;
+  gap: var(--e5);
+  flex-wrap: wrap;
+  margin-block-start: var(--e4);
+}
+.radar__captura img,
+.projeto__captura img {
+  aspect-ratio: var(--proporcao-captura);
+  object-fit: cover;
+  border: 1px solid var(--fio-estrutural);
+  border-radius: var(--raio);
+  inline-size: 100%;
+}
+.radar__decisoes {
+  margin-block-start: var(--e7);
+}
+.decisao__rotulo {
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  font-weight: 500;
+  letter-spacing: var(--tracking-rotulo);
+  color: var(--acento);
+  margin-block-end: var(--e2);
+}
+.decisao__seta {
+  color: var(--acento);
+}
+.radar__leia {
+  margin-block-start: var(--e5);
+}
+
+/* ---------- experiência ---------- */
+
+.cargo__cabeca {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--e4);
+  flex-wrap: wrap;
+}
+/* `min-width: auto` e o padrao em item de flex, e vale o conteudo minimo: sem
+   zerar, "Desenvolvimento" a 36px se recusa a encolher e leva a barra junto. */
+.cargo__cabeca > * {
+  min-inline-size: 0;
+}
+.cargo__expediente {
+  color: var(--tinta-fraca);
+  /*
+    Sem `nowrap`. A linha de expediente le melhor numa linha so, e em largura
+    normal ela cabe numa linha so por conta propria. Forcar com `nowrap` custava
+    caro nos dois extremos: estourava a pagina em 320 e 390, e estourava de novo
+    no zoom de texto a 200% em toda largura. Uma preferencia tipografica nao vale
+    uma barra de rolagem horizontal.
+  */
+  overflow-wrap: break-word;
+}
+.cargo__resultados {
+  list-style: none;
+  padding: 0;
+  margin-block: var(--e4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e3);
+}
+.cargo__resultados li {
+  display: grid;
+  grid-template-columns: minmax(0, 7rem) minmax(0, 1fr);
+  gap: var(--e4);
+  align-items: baseline;
+  min-inline-size: 0;
+}
+/* Sem número, o texto ocupa as duas colunas: nada de coluna vazia pendurada. */
+.cargo__resultados li:not(:has(.cargo__numero)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.cargo__numero {
+  color: var(--acento);
+  font-weight: 500;
+  text-align: end;
+}
+.cargo__selo {
+  color: var(--tinta-fraca);
+  font-weight: 400;
+}
+
+/* ---------- projetos ---------- */
+
+.projetos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-block-start: 1px solid var(--fio);
+}
+.projeto {
+  display: grid;
+  /* Todas as trilhas com minmax(0, ...): uma coluna em rem fixo dobra junto com
+     o zoom de texto e empurra a grade para fora da tela. */
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 15rem);
+  gap: var(--e5);
+  align-items: start;
+  padding-block: var(--e5);
+  border-block-end: 1px solid var(--fio);
+  min-block-size: 56px;
+  transition: background-color var(--transicao);
+}
+.projeto:hover {
+  background: var(--superficie);
+}
+.projeto__indice {
+  color: var(--tinta-fraca);
+}
+.projeto__nome {
+  margin-block-end: var(--e2);
+}
+.projeto__resumo {
+  margin-block-end: var(--e3);
+}
+.projeto__destinos {
+  display: flex;
+  gap: var(--e5);
+  flex-wrap: wrap;
+}
+.projeto__sem-demo {
+  color: var(--estado);
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--alvo);
+}
+
+/* Variante tipográfica para o único projeto sem captura. Nunca um buraco. */
+.projeto__placa {
+  aspect-ratio: var(--proporcao-captura);
+  border: 1px solid var(--fio-estrutural);
+  border-radius: var(--raio);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--e4);
+  color: var(--tinta-fraca);
+  background: var(--superficie);
+}
+.projeto__placa-indice {
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--fio-estrutural);
+}
+.projeto__placa-stack {
+  font-size: var(--mono-base);
+}
+.projetos__fecho {
+  margin-block-start: var(--e5);
+}
+
+/* ---------- sobre ---------- */
+
+.sobre__texto {
+  margin-block-end: var(--e6);
+}
+.sobre__sub {
+  margin-block: var(--e7) var(--e4);
+}
+.sobre__itens {
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  line-height: 1.7;
+  color: var(--tinta);
+  margin: 0;
+}
+.sobre__assumir {
+  margin: 0;
+  padding-inline-start: var(--e5);
+  display: grid;
+  /*
+    `minmax(0, 1fr)` e obrigatorio em TODA grade de coluna unica deste arquivo.
+    Sem declarar as colunas, o grid cria uma trilha implicita `auto`, e trilha
+    auto se dimensiona por max-content: o item ignora a largura do pai e sai
+    pela direita. Medido no zoom de texto a 200% em 320px — a <ul> estava
+    corretamente em 241px e os <li> chegavam a 359.
+  */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e3);
+  max-inline-size: min(var(--medida), 100%);
+}
+.sobre__curso {
+  display: block;
+  font-weight: 600;
+}
+.sobre__instituicao {
+  display: block;
+  color: var(--tinta-fraca);
+  margin-block-start: var(--e1);
+}
+.sobre__certificacao {
+  color: var(--tinta);
+  margin: 0;
+}
+
+/* ---------- contato ---------- */
+
+.contato__sub {
+  color: var(--tinta-fraca);
+  margin-block-end: var(--e6);
+}
+.contato__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--e6);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e4);
+}
+.contato__item {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  /* Sem altura fixa e sem overflow: é o par que hoje corta o conteúdo e recorta
+     o anel de foco no site antigo. */
+  min-block-size: var(--alvo);
+}
+.contato__link svg {
+  font-size: 1.25rem;
+  flex: 0 0 auto;
+}
+.contato__copiar {
+  background: none;
+  border: 1px solid var(--fio-estrutural);
+  border-radius: var(--raio);
+  color: var(--tinta-fraca);
+  padding: var(--e2) var(--e3);
+  min-block-size: var(--alvo);
+  cursor: pointer;
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  transition: color var(--transicao), border-color var(--transicao);
+}
+.contato__copiar:hover {
+  color: var(--acento);
+  border-color: var(--acento);
+}
+.contato__copiar:active {
+  transform: translateY(1px);
+}
+
+/* ---------- colofão ---------- */
+
+.colofao {
+  border-block-start: 1px solid var(--fio-estrutural);
+  padding-block: var(--e7) var(--e8);
+}
+.colofao__nome {
+  font-weight: 600;
+  margin-block-end: var(--e4);
+}
+.colofao__medidas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e1);
+  color: var(--tinta-fraca);
+  font-weight: 400;
+  margin-block-end: var(--e4);
+}
+.colofao__medidas dt {
+  font-weight: 500;
+  color: var(--tinta);
+}
+.colofao__medidas dd {
+  margin: 0;
+}
+.colofao__legenda,
+.colofao__creditos {
+  color: var(--tinta-fraca);
+  font-weight: 400;
+  max-inline-size: min(var(--medida), 100%);
+  margin-block-end: var(--e4);
+}
+.colofao a {
+  color: var(--tinta-fraca);
+  text-underline-offset: 3px;
+}
+.colofao a:hover {
+  color: var(--acento);
+}
+.colofao__idioma {
+  display: flex;
+  align-items: center;
+  gap: var(--e1);
+}
+
+/* ---------- responsivo ---------- */
+
+@media (max-width: 1023px) {
+  .radar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /*
+    Precisa zerar a colocacao nomeada junto. As linhas `texto` e `captura` so
+    existem na grade de duas colunas; mantidas aqui, o navegador cria trilhas
+    IMPLICITAS com esses nomes, dimensionadas pelo conteudo — e a captura de
+    1483px passa a mandar na largura da grade. Medido no zoom de texto a 200%
+    em 320px: a imagem estourava a pagina.
+  */
+  .radar__captura,
+  .radar__texto {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .projeto {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .abertura__apresentacao {
+    flex-direction: column;
+  }
+  .cargo__resultados li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cargo__numero {
+    text-align: start;
+  }
+  .regua__item {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--fio);
+    padding-inline: 0;
+  }
+  .regua__item:last-child {
+    border-block-end: 0;
+  }
+}

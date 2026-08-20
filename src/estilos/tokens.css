@@ -1,0 +1,74 @@
+/*
+ * Tokens. Fonte única de verdade da cor, do tipo e do espaço.
+ *
+ * Nenhum hex fora deste arquivo. Os valores e as razões de contraste que os
+ * justificam estão em DESIGN.md §2 e §4, e scripts/contraste.mjs recalcula cada
+ * par no CI — se alguém ajustar um token e derrubar um par abaixo do piso da
+ * WCAG, o build para.
+ *
+ * A ordem dos blocos importa e é normativa (DESIGN.md §2.4): nenhuma cor nasce
+ * dentro de media query. O tema claro é o :root completo; o escuro só REDEFINE.
+ * Assim o alternador vence nos dois sentidos e nada fica indefinido.
+ */
+
+:root {
+  /* --- cor: claro (canônico) --- */
+  --papel:            #FBFAF7;
+  --superficie:       #F2EFE8;
+  --tinta:            #16181C;
+  --tinta-fraca:      #5B5F66;
+  --acento:           #0E6E63;
+  --acento-contraste: #FBFAF7;
+  --estado:           #8A5800;
+  --fio:              #E0DBD0;
+  --fio-estrutural:   #767E7C;
+
+  /* --- tipografia --- */
+  --fonte:      "Sora", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --fonte-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+  --corpo:        1.0625rem;
+  --corpo-altura: 1.62;
+  --mono-base:    1rem;
+  --tracking-sobrancelha: 0.32em;
+  --tracking-rotulo:      0.06em;
+  --medida: 62ch;
+
+  /* --- espaço --- */
+  --e1: .25rem; --e2: .5rem; --e3: .75rem; --e4: 1rem;
+  --e5: 1.5rem; --e6: 2rem;  --e7: 3rem;   --e8: 5rem;
+
+  /* --- layout --- */
+  --largura-maxima:  72rem;
+  --largura-aparato: 12rem;
+  --gap-aparato:     2rem;
+  --recuo-pagina:    1.5rem;
+  --raio:            4px;
+  --raio-pilula:     999px;
+  --alvo:            48px;
+  --proporcao-captura: 1483 / 812;
+
+  /* --- movimento --- */
+  --transicao: .12s cubic-bezier(.2, 0, 0, 1);
+  --entrada:   .18s cubic-bezier(.19, 1, .22, 1);
+  --progresso: 0;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --papel: #0C1B22; --superficie: #17303A;
+    --tinta: #EFF5F5; --tinta-fraca: #9FB3B8;
+    --acento: #35C4B5; --acento-contraste: #0C1B22;
+    --estado: #D99A2B;
+    --fio: #22414C; --fio-estrutural: #6B939C;
+  }
+}
+
+:root[data-tema="escuro"] {
+  --papel: #0C1B22; --superficie: #17303A;
+  --tinta: #EFF5F5; --tinta-fraca: #9FB3B8;
+  --acento: #35C4B5; --acento-contraste: #0C1B22;
+  --estado: #D99A2B;
+  --fio: #22414C; --fio-estrutural: #6B939C;
+}

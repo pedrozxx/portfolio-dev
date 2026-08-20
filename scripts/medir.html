@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Medicao responsiva</title>
+<style>
+  /* Banco de medicao. Cada iframe tem a largura exata de um breakpoint, e a
+     media query do site avalia contra o viewport do iframe — nao contra a
+     janela. Serve para medir estouro horizontal sem depender de redimensionar
+     a janela do sistema operacional, que aqui esta travada. */
+  body { font: 14px ui-monospace, monospace; background:#111; color:#eee; margin:0; padding:16px; }
+  .linha { display:flex; gap:12px; align-items:flex-start; margin-bottom:16px; }
+  iframe { border:1px solid #444; height:520px; background:#fff; }
+  pre { margin:0; }
+</style>
+</head>
+<body>
+<div id="molduras"></div>
+<pre id="saida">medindo...</pre>
+<script>
+  const LARGURAS = [320, 390, 768, 1024, 1280, 1366, 1440];
+  const ALVO = new URLSearchParams(location.search).get('alvo') || '/';
+  const molduras = document.getElementById('molduras');
+  const frames = LARGURAS.map(w => {
+    const f = document.createElement('iframe');
+    f.width = w; f.src = ALVO; f.dataset.largura = w;
+    molduras.appendChild(f);
+    return f;
+  });
+
+  // Onde o capitulo 01 comeca — o DESIGN.md exige que o carro-chefe caia dentro
+  // do primeiro scroll num notebook 1366x768, senao o hero encolhe.
+  window.ondeComecaOCapitulo01 = function () {
+    return frames.map(f => {
+      const d = f.contentDocument;
+      const el = d.getElementById('radar');
+      return { largura: Number(f.dataset.largura), topoDoRadar: el ? Math.round(el.getBoundingClientRect().top + f.contentWindow.scrollY) : null };
+    });
+  };
+
+  // Quantas procedencias aparecem sem rolar — a assinatura tem de sobreviver ao celular.
+  window.procedenciasAcimaDaDobra = function (alturaViewport) {
+    return frames.map(f => {
+      const d = f.contentDocument;
+      const vistas = [...d.querySelectorAll('.regua__fonte, .aparato')].filter(n => {
+        const r = n.getBoundingClientRect();
+        return r.top < alturaViewport && r.bottom > 0 && r.width > 0;
+      });
+      return { largura: Number(f.dataset.largura), procedenciasVisiveis: vistas.length };
+    });
+  };
+
+  // Zoom de texto a 200% (WCAG 1.4.4): so o tamanho da fonte cresce, nao a pagina.
+  window.zoomDeTexto = function (fator) {
+    return frames.map(f => {
+      const d = f.contentDocument, w = f.contentWindow;
+      d.documentElement.style.fontSize = (16 * fator) + 'px';
+      const el = d.documentElement;
+      const estoura = el.scrollWidth > w.innerWidth;
+      const culpados = [];
+      if (estoura) {
+        for (const n of d.querySelectorAll('body *')) {
+          const r = n.getBoundingClientRect();
+          if (r.right > w.innerWidth + 1 && r.width > 0) {
+            culpados.push(n.tagName.toLowerCase() + '.' + (n.className || '').toString().split(' ')[0]);
+            if (culpados.length >= 3) break;
+          }
+        }
+      }
+      d.documentElement.style.fontSize = '';
+      return { largura: Number(f.dataset.largura), estouraCom200: estoura, culpados };
+    });
+  };
+
+  window.medir = function () {
+    return frames.map(f => {
+      const d = f.contentDocument, w = f.contentWindow;
+      const el = d.documentElement;
+      const estoura = el.scrollWidth > w.innerWidth;
+      // Procura QUAL elemento passa da borda direita — sem isso "tem estouro"
+      // e uma informacao inutil: nao da para consertar o que nao se localiza.
+      const culpados = [];
+      if (estoura) {
+        for (const n of d.querySelectorAll('body *')) {
+          const r = n.getBoundingClientRect();
+          if (r.right > w.innerWidth + 1 && r.width > 0) {
+            culpados.push((n.tagName.toLowerCase()) + '.' + (n.className || '').toString().split(' ')[0] + ' right=' + Math.round(r.right));
+            if (culpados.length >= 4) break;
+          }
+        }
+      }
+      return {
+        largura: Number(f.dataset.largura),
+        viewport: w.innerWidth,
+        scrollWidth: el.scrollWidth,
+        estouroHorizontal: estoura,
+        culpados,
+      };
+    });
+  };
+</script>
+</body>
+</html>

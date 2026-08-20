@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /*
+    Cartao de compartilhamento em inglês, 1200x630 -> public/og-en.png.
+    Como gerar de novo:
+      1. npm run dev
+      2. abrir http://localhost:5173/scripts/og-cartao-en.html
+      3. capturar a tela e recortar os 1200x630 do canto superior esquerdo
+    Renderizado no Chrome de proposito: o rasterizador de SVG do sharp nao tem
+    Sora nem JetBrains Mono instaladas e caia em fonte com serifa, alem de
+    perder os acentos. Fonte errada num cartao de marca e o defeito mais visivel
+    possivel — ele e a primeira coisa que aparece no WhatsApp e no LinkedIn.
+  */
+  /* Cartao de compartilhamento, 1200x630. Renderizado no Chrome porque o
+     rasterizador de SVG nao tem Sora nem JetBrains Mono instaladas e cairia em
+     fallback — que e exatamente o que nao pode acontecer numa peca de marca. */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1200px; height:630px; overflow:hidden; }
+  body {
+    background:#0C1B22; color:#EFF5F5;
+    font-family:'Sora',sans-serif;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 96px; position:relative;
+  }
+  .barra { position:absolute; left:0; top:0; bottom:0; width:6px; background:#35C4B5; }
+  .sobrancelha {
+    display:flex; align-items:center; gap:16px;
+    font-family:'JetBrains Mono',monospace; font-weight:500;
+    font-size:20px; letter-spacing:.32em; text-transform:uppercase; color:#35C4B5;
+  }
+  .sobrancelha::before { content:''; width:56px; height:2px; background:#35C4B5; }
+  h1 { font-size:56px; font-weight:600; letter-spacing:-.025em; margin:28px 0 20px; line-height:1.06; max-width:19ch; }
+  .apoio { font-size:24px; line-height:1.4; max-width:46ch; color:#9FB3B8; }
+  .regua { display:flex; gap:44px; margin-top:32px; padding-top:24px; border-top:1px solid #6B939C; }
+  .item { display:flex; flex-direction:column; gap:4px; }
+  .valor { font-family:'JetBrains Mono',monospace; font-weight:500; font-size:26px; font-variant-numeric:tabular-nums; }
+  .rot { font-family:'JetBrains Mono',monospace; font-size:15px; letter-spacing:.06em; color:#9FB3B8; text-transform:uppercase; }
+  .rodape { margin-top:34px; font-family:'JetBrains Mono',monospace; font-size:18px; letter-spacing:.06em; color:#9FB3B8; }
+</style>
+</head>
+<body>
+  <div class="barra"></div>
+  <p class="sobrancelha" id="sobrancelha">Castanhal · Pará · Brazil</p>
+  <h1 id="titulo">My code runs in production — and you can check it.</h1>
+  <p class="apoio" id="apoio">Pedro Augusto Darolt · software developer · intern or junior</p>
+  <div class="regua">
+    <div class="item"><span class="valor">1.563 → 93</span><span class="rot" id="r1">lines, main component</span></div>
+    <div class="item"><span class="valor">39 + 39</span><span class="rot" id="r2">vitest + pytest tests</span></div>
+    <div class="item"><span class="valor">JUN/2026 →</span><span class="rot" id="r3">dev intern, Benevides (PA)</span></div>
+  </div>
+  <p class="rodape" id="rodape">github.com/pedrozxx · linkedin.com/in/pedro-darolt</p>
+</body>
+</html>

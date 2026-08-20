@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Pedro Augusto Darolt">
+  <!--
+    A marca é a própria assinatura do site: a margem de procedência.
+    Um fio vertical no acento (a margem) e as linhas do texto à direita dele.
+    Feito só com retângulos, de propósito — favicon em SVG não carrega fonte da
+    web, então qualquer letra desenhada com <text> sairia numa fonte de sistema
+    diferente em cada máquina.
+  -->
+  <rect width="64" height="64" rx="12" fill="#0C1B22"/>
+  <rect x="16" y="14" width="3" height="36" fill="#35C4B5"/>
+  <rect x="27" y="16" width="21" height="3" fill="#EFF5F5"/>
+  <rect x="27" y="25" width="15" height="3" fill="#9FB3B8"/>
+  <rect x="27" y="34" width="19" height="3" fill="#9FB3B8"/>
+  <rect x="27" y="43" width="11" height="3" fill="#9FB3B8"/>
+</svg>
