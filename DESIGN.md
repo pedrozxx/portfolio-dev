@@ -12,9 +12,14 @@ dedução.
 ## 0. Origem, e o que isso obriga
 
 A direção visual foi construída a partir de **matteodante.it**, medida no Chrome em
-20/08/2026 a pedido do autor: a paleta, as três famílias tipográficas, os easings e a
-gramática de movimento (barra de progresso, sequência de abertura, marquee, capítulos
-numerados com numeral fantasma, trilho horizontal fixado) vêm de lá.
+20/08/2026 a pedido do autor: a paleta, os easings e a gramática de movimento (barra de
+progresso, sequência de abertura, marquee, capítulos numerados com numeral fantasma,
+trilho horizontal fixado) vêm de lá.
+
+**A tipografia não vem mais de lá.** Em 25/08/2026 o autor pediu "uma fonte mais clean e
+limpa", e as famílias da referência (Orbitron e Rajdhani) saíram. A família de display e
+de prosa passou a ser **Sora** — a mesma do banner que o Pedro desenhou para o próprio
+LinkedIn, o que fecha a continuidade entre LinkedIn e portfólio (§3).
 
 Isso obriga duas coisas, e as duas são normativas:
 
@@ -40,7 +45,7 @@ rolar.
 - **Variância 7.** Escala tipográfica extrema entre o display e o corpo, blocos de
   altura de viewport, um trilho que rompe a vertical. O gesto gráfico é parte do
   argumento — mas nunca por cima da leitura.
-- **Movimento 7.** Movem-se seis coisas, listadas em §7. É a maior mudança em relação
+- **Movimento 7.** Movem-se oito coisas, listadas em §7. É a maior mudança em relação
   a qualquer coisa que o Pedro publicou antes, e é deliberada.
 
 ### 1.1 A regra que o movimento não pode quebrar
@@ -126,39 +131,59 @@ produção.
 
 ## 3. Tipografia
 
-Três famílias, cinco cortes, todas no Google Fonts.
+Duas famílias, cinco cortes, **auto-hospedadas** em `public/fonts/` (subconjunto latin,
+um arquivo variável por família, licença OFL) e pré-carregadas no `<head>`. O `<link>`
+do Google Fonts saiu em 25/08/2026: era a maior fatia do caminho crítico — 334 ms de
+401 ms até o `DOMContentLoaded` — e um terceiro domínio antes da primeira pintura.
 
-- **Display — `Orbitron` 700.** Caixa alta, e **só** display: títulos, numerais de
-  capítulo, nomes de cartão, a frase de passagem. Orbitron tem altura-x baixa e desenho
-  largo; em texto corrido cansa em duas linhas.
-- **Prosa — `Rajdhani` 400/600.**
-- **Dado — `JetBrains Mono` 400/500**, com `tabular-nums`.
+- **Display e prosa — `Sora` 400/600/700.** Uma família só para título e texto: é a
+  do banner do LinkedIn do Pedro, geométrica, de altura-x generosa, e desenha til,
+  cedilha e agudo sem remendo. Display em **600 (H3) e 700 (H1, H2)**, prosa em 400,
+  destaque em 600.
+- **Dado — `JetBrains Mono` 400/500**, com `tabular-nums`. Continua sendo a única voz
+  em caixa alta.
 
 | Papel | Regra |
 | --- | --- |
-| H1 | `clamp(2.5rem, 8.5vw, 7rem)` · `line-height: 1.06` |
-| H2 | `clamp(2rem, 6vw, 4.5rem)` · `line-height: 1.08` |
-| H3 | `clamp(1.1rem, 2vw, 1.4rem)` |
-| Corpo | `1.125rem` / `1.6` · medida `min(62ch, 100%)` |
+| H1 | `clamp(2.25rem, 6.2vw, 4.75rem)` · 700 · `line-height: 1.04` · `letter-spacing: -0.025em` |
+| H2 | `clamp(2rem, 5.2vw, 4rem)` · 700 · `line-height: 1.06` · `letter-spacing: -0.02em` |
+| H3 | `clamp(1.125rem, 1.8vw, 1.375rem)` · 600 · `line-height: 1.2` · `letter-spacing: -0.01em` |
+| Corpo | `1.0625rem` / `1.65` · medida `min(58ch, 100%)` |
 | Sobrancelha | mono 500 · `1rem` · caixa alta · `letter-spacing: 0.32em` |
-| Numeral fantasma | `min(20vw, 16rem)`, contornado |
+| Passagem | `clamp(1.5rem, 3.4vw, 2.75rem)` · 700 · medida `min(22ch, 100%)` |
+| Numeral fantasma | `min(20vw, 16rem)`, contornado, Sora 700 |
+| Marquee | Sora 700, caixa alta, contornado alternando com cheio |
+
+Por que Sora e não a resposta óbvia: `Inter` é banida (§11), e das famílias limpas
+disponíveis a única que o Pedro **já usa em público** é a Sora. Um recrutador abre o
+LinkedIn e o portfólio na mesma tarde; a fonte igual é o que diz que é a mesma pessoa.
 
 ### 3.1 Regras duras
 
 1. **Nada abaixo de 14px**, e nada abaixo de 16px em texto corrido.
-2. **Orbitron não sabe desenhar til, e por isso o til vem de fora.** Medido a 76px no
-   Chrome, lado a lado: o `ã` do Orbitron sai idêntico ao `à`, e o `õ` sai como `ò`.
-   O H1 em português deste site era publicado como "produçào". Seis pontos de código
-   (`ã õ Ã Õ ñ Ñ`) saem do Orbitron por um `@font-face` com `unicode-range` em
-   `tokens.css`; todo o resto continua Orbitron. Nenhuma fonte da direção resolve:
-   o til do Rajdhani é um breve (`ă`).
-3. **Orbitron pede entrelinha maior que 1.** O til de `PRODUÇÃO` e o agudo de `CÓDIGO`
-   saem da caixa: com `line-height: 0.98` encostavam na linha de cima, e com
-   `scroll-padding-top` curto a âncora parava com o acento por baixo do cabeçalho.
-4. **Mono é a voz de todo DADO; Rajdhani é a voz de toda PROSA.** Frase com sujeito e
-   verbo é Rajdhani, sempre. Prosa em mono é proibida.
-5. Separador de milhar pt-BR: **1.563**, nunca `1,563`.
-6. **Banido:** `Inter`, serifa, `#000000`, gradiente em título, barra de proficiência.
+2. **Display em caixa baixa.** Título em caixa alta era a voz do Orbitron; em Sora,
+   caixa alta em 4rem grita e a direção deixou de gritar. Caixa alta fica restrita ao
+   mono (sobrancelha, selo, rótulo, link externo) e ao marquee, que é uma fita de nomes
+   de tecnologia — rótulo, não frase.
+3. **O remendo do til saiu junto com o Orbitron.** Existia um `@font-face` "Til
+   Correto" em `tokens.css` que roubava seis pontos de código (`ã õ Ã Õ ñ Ñ`) do
+   Orbitron, porque ele desenhava o til como crase. A Sora desenha o til; o remendo
+   foi removido, e a verificação é a mesma de sempre: **olhar o glifo no navegador**,
+   não confiar na tabela de cobertura da fonte.
+4. **Mono é a voz de todo DADO; Sora é a voz de toda PROSA.** Frase com sujeito e
+   verbo é Sora, sempre. Prosa em mono é proibida.
+5. **Tracking negativo só em display.** Corpo e mono nunca levam tracking negativo:
+   a Sora tem altura-x alta e fecha demais abaixo de 1.25rem.
+6. **Teto de display em `em`, nunca em `ch`.** O `ch` muda com a fonte de fallback,
+   e o título trocava de número de linhas quando a Sora chegava — 79px de salto no
+   hero em inglês, medido. `13.75em` no H1, `10.75em` no H2 dos capítulos.
+7. **A pilha tem um fallback ajustado por métrica** (`"Sora Fallback"`, `size-adjust`
+   113,7% em 400 e 108,6% em 600/700, medidos contra a Segoe UI): a troca de fonte
+   não move o layout. `size-adjust` é o descritor que importa, porque a entrelinha
+   do site é numérica.
+8. Separador de milhar pt-BR: **1.563**, nunca `1,563`.
+9. **Banido:** `Inter`, serifa, `#000000`, gradiente em título, barra de proficiência,
+   CSS de fonte servido por terceiro no caminho crítico.
 
 ---
 
@@ -217,6 +242,21 @@ que recebe foco. **Nenhum container que hospede elemento focável pode ter
   hover. **Proibido:** `<a>` vazio esticado por cima de texto que não pertence ao link.
 - **Cartão do trilho** — captura no topo, índice e selo, nome em display, resumo, faixa
   técnica, dois destinos separados. Nunca o cartão inteiro clicável.
+  **Translúcido, não opaco**: o fundo é `color-mix(in oklab, var(--superficie) 54%,
+  transparent)` e a borda é o fio estrutural a 55%, para o numeral fantasma e o papel
+  aparecerem através dele conforme desliza. Não há `backdrop-filter`: sete cartões com
+  desfoque de fundo movendo-se a cada quadro custam repintura inteira da pista, e o
+  papel atrás é chapado — não há o que desfocar. Raio `10px` (o único lugar do site
+  acima de `--raio`), captura recortada pelo mesmo raio em `.cartao__captura`
+  (`overflow: clip` **só ali**, que não hospeda foco), realce de 1px na aresta superior
+  e sombra tingida no papel. Atrás da pista há uma vinheta radial no acento a 8% —
+  o mesmo recurso do banner do LinkedIn do Pedro — pintada uma vez, no fundo estático
+  da pista, para o translúcido ter o que deixar passar. O contraste do texto sobre o cartão fica entre os dois
+  pares medidos — texto sobre superfície e texto sobre papel — porque a mistura só
+  interpola entre esses dois fundos. **Todo `color-mix` fica sob `@supports`**, com
+  fallback explícito fora (cartão opaco, sem vinheta): o Lightning CSS do Tailwind
+  gerava como fallback da vinheta o acento a 100% — uma mancha laranja em navegador
+  sem `color-mix`.
 - **Marquee** — o grupo é duplicado no DOM para o laço não ter emenda, e a **segunda
   cópia é `aria-hidden`**: sem isso o leitor de tela lê a lista duas vezes.
 - **Numeral fantasma** — `aria-hidden` e redundante por construção: o mesmo número
@@ -262,11 +302,55 @@ O `<h2>` é **sempre a palavra comum** — *Experiência*, *Projetos*, *Sobre*. 
 recrutador não achar "Experiência" num `Ctrl+F`, ou o ATS não indexar, a direção falhou
 por mais bonita que esteja.
 
+### 6.2 As figuras dos capítulos
+
+Cada capítulo de capacidade é uma grade de **duas colunas iguais quando cabem duas
+colunas de 27rem** — a partir de 1024px na fonte padrão: texto de um lado, figura do
+outro, alternando — **01 e 02 com a figura à esquerda e o texto à direita; 03 com o
+texto à esquerda e a figura à direita**, a pedido do autor. A figura do 03 encosta na
+borda direita (`justify-self: end` no irmão seguinte ao texto), espelhando as outras.
+Abaixo disso vira coluna única na ordem do DOM, e a figura encolhe para
+`max-inline-size: 22rem`.
+
+**A decisão de duas colunas é em rem, não no breakpoint em px** (`auto-fit` com
+`minmax(min(100%, 27rem), 1fr)`): no zoom de texto a 200% os 27rem viram 864px e a
+grade volta sozinha a uma coluna. Com `1fr 1fr` fixo o parágrafo ficava com ~20
+caracteres por linha a 200% (WCAG 1.4.4) — e o gate de estouro não pegava, porque
+nada estourava.
+
+**A alternância é feita na ordem do DOM, não com `order` nem `grid-template-areas`.**
+A figura é decorativa (`aria-hidden`, sem nada focável), então a ordem em que ela
+aparece no DOM não muda a leitura — e a regra §9.7 continua inteira.
+
+**O que a figura é.** Uma composição em SVG inline, construída no repositório, que
+desenha o *mecanismo* daquele capítulo — não uma captura, não uma ilustração genérica:
+
+| # | Figura | O que desenha |
+| --- | --- | --- |
+| 01 | `FiguraCamadas` | Três painéis em profundidade: interface (janela com barra, coluna e gráfico), API (rotas com selo de resposta) e banco (cilindro), ligados por um fio no acento — "ponta a ponta" |
+| 02 | `FiguraAlcada` | Proposta → portão de aprovação com três degraus de alçada (um aceso) → mensagem no Telegram, com a trilha de registro embaixo — "propõe, nunca decide" |
+| 03 | `FiguraCaptacao` | Página com formulário em primeiro plano e, atrás, o contador de rate limit com o sexto envio barrado em âmbar — "formulário público sem limite é porta aberta" |
+
+Regras das figuras, todas normativas:
+
+1. **Nenhum hex, nenhum texto.** Cor vem dos tokens via `currentColor` e custom
+   properties, para seguir os dois temas. Texto dentro de SVG dependeria de fonte
+   carregada e de idioma; a figura usa barras no lugar de texto, como esqueleto.
+2. **Não expõe tela interna.** O BI comercial e o agente de compras são sistemas da
+   Norte; a figura desenha o mecanismo, não a tela.
+3. **Camadas separadas por `<g>`**, cada uma com a própria profundidade, porque o
+   movimento de §7.8 desloca cada camada numa taxa diferente.
+4. **Sem `id` interno** (gradiente, máscara, filtro): o SVG entra três vezes na
+   página e `id` repetido é HTML inválido. Sem filtros de desfoque: custam repintura.
+5. **Coordenadas com no máximo uma casa decimal.**
+6. **Nunca ultrapassa a coluna.** `inline-size: 100%` com `aspect-ratio` fixo, e a
+   coluna é `minmax(0, 1fr)` — a figura não tem como pedir largura própria.
+
 ---
 
 ## 7. Movimento
 
-Movem-se seis coisas. Só `transform`, `opacity` e `color` — nunca `width`, `height`,
+Movem-se oito coisas. Só `transform`, `opacity` e `color` — nunca `width`, `height`,
 `top` ou `left`.
 
 1. **Barra de progresso** no topo, `scaleX(var(--progresso))`, escrita por `rAF`.
@@ -278,6 +362,25 @@ Movem-se seis coisas. Só `transform`, `opacity` e `color` — nunca `width`, `h
    vez só, por `IntersectionObserver`.
 5. **Trilho horizontal** (§8).
 6. **Estados de interação:** 0,18s em cor, borda e sublinhado; `:active` recua 1px.
+7. **Flutuação das figuras (§6.2):** cada camada levita num laço `translateY` de
+   ±5px, `ease-in-out`, alternado, infinito, com durações **diferentes por camada**
+   (5,4s · 6,6s · 7,8s) para as três nunca subirem juntas. O que anima é o `<g>` da
+   camada, via `transform` em CSS, porque o que precisa mover é a camada e não a
+   figura inteira. O contêiner da figura **não** anima, para o `perspective` do
+   item 8 ficar parado.
+8. **Paralaxe do ponteiro:** só com `(hover: hover) and (pointer: fine)`. O hook
+   `useParalaxe` ouve `pointermove` na **seção inteira** (não na figura: a pessoa
+   está lendo o texto, e a figura responder ao lado é o que a faz parecer parte da
+   página), converte a posição para −1…1 **em relação à viewport** (`clientX /
+   innerWidth`, sem `getBoundingClientRect` — nenhuma leitura de layout por quadro)
+   e escreve `--dx`/`--dy` **em cada camada**, já multiplicados pela profundidade
+   dela, um `requestAnimationFrame` por evento. A figura inteira inclina até 4° em
+   `rotateX`/`rotateY` sob `perspective: 1200px`. Ao sair, `pointerleave` zera e a
+   transição de 0,7s em `ease-out-expo` traz tudo de volta. Toque não participa:
+   sem ponteiro fino, resta a flutuação.
+
+**Os itens 7 e 8 param inteiros em `prefers-reduced-motion`**, e a figura fica parada
+na posição de repouso — que é o estado base de cada camada (§1.1).
 
 ### 7.1 Rolagem contínua nunca vira estado do React
 
@@ -396,4 +499,7 @@ traduzido do site de origem · `Inter` · serifa · `#000000` · gradiente em t�
 de proficiência com porcentagem · contador de "projetos concluídos" · `<a>` vazio com
 `.sr-only` · cursor customizado · preloader · texto que se digita sozinho · bandeira
 como seletor de idioma · `overflow-x: hidden` no `body` · `order` no CSS · botão
-desabilitado · spinner (carregamento é esqueleto com as dimensões reais).
+desabilitado · spinner (carregamento é esqueleto com as dimensões reais) ·
+biblioteca de animação (`motion`, `framer-motion`, GSAP): os oito movimentos de §7
+são CSS e `requestAnimationFrame`, e 30 kB de runtime para levitar três figuras é
+peso morto · `backdrop-filter` em elemento que se move a cada quadro.

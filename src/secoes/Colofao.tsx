@@ -29,7 +29,7 @@ export function Colofao({ idioma }: { readonly idioma: Idioma }) {
 
         <dl className="colofao__medidas mono">
           <dt>{t.rodapeColofao}</dt>
-          <dd>Orbitron 700 · Rajdhani 400/600 · JetBrains Mono 400/500 · corpo 18/1,6 · medida 62ch</dd>
+          <dd>Sora 400/600/700 · JetBrains Mono 400/500 · corpo 17/1,65 · medida 58ch</dd>
           <dd>
             {idioma === 'pt' ? 'Contraste medido, tema claro' : 'Measured contrast, light theme'}:{' '}
             {MEDIDAS_CLARO}

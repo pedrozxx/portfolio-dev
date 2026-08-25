@@ -48,7 +48,7 @@ export function Faixa({ idioma }: { readonly idioma: Idioma }) {
   return (
     <div
       className="marquee"
-      role="presentation"
+      role="group"
       aria-label={idioma === 'pt' ? 'Tecnologias' : 'Technologies'}
     >
       <Marquee itens={LINHA_UM} />

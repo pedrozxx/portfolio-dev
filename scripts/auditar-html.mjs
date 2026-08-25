@@ -95,6 +95,21 @@ for (const { arquivo, lang } of PAGINAS) {
     }
   }
 
+  // O SVG das figuras entra três vezes por página (DESIGN.md §6.2, regra 4):
+
+  // um `id` dentro dele viraria três ids iguais, e HTML com id repetido é
+
+  // inválido — e quebra `aria-labelledby` de quem o cita. Portão para a regra.
+
+  const ids = [...document.querySelectorAll('[id]')].map((e) => e.id)
+
+  for (const id of new Set(ids.filter((id, i) => ids.indexOf(id) !== i))) {
+
+    reprovar(p, 'id duplicado', `"${id}" aparece ${ids.filter((x) => x === id).length} vezes`)
+
+  }
+
+
   const canonical = document.querySelector('link[rel=canonical]')?.getAttribute('href')
   if (!canonical) reprovar(p, 'canonical', 'ausente')
 

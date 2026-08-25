@@ -15,9 +15,8 @@
 
 html {
   scroll-behavior: smooth;
-  /* Cabeçalho fixo + respiro folgado. Orbitron em caixa alta joga o circunflexo
-     de "EXPERIÊNCIA" e o agudo de "CÓDIGO" bem acima da altura de caixa: com
-     folga curta, a âncora parava com o acento por baixo da barra. */
+  /* Cabeçalho fixo + respiro folgado: com folga curta, a âncora parava com o
+     título encostado na barra. */
   scroll-padding-top: calc(var(--altura-cabecalho) + var(--e6));
   -webkit-text-size-adjust: 100%;
 }
@@ -80,47 +79,50 @@ textarea {
 /* ---------- tipografia ---------- */
 
 /*
- * Orbitron é fonte de display e só isso: caixa alta, títulos, numerais de
- * capítulo. Ela não tem itálico, tem altura-x baixa e desenho largo — em texto
- * corrido cansa em duas linhas. A prosa é Rajdhani; o dado é JetBrains Mono.
+ * Sora em display e em prosa (DESIGN.md §3). Display é caixa BAIXA: a caixa alta
+ * era a voz do Orbitron, e em Sora a 4rem ela grita. A única voz em caixa alta
+ * que sobrou é o mono — sobrancelha, selo, rótulo, link externo — e o marquee.
+ * Tracking negativo só aqui, em display; corpo e mono nunca (§3.1).
  */
 .display {
   font-family: var(--fonte-display);
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: var(--tracking-display);
-  line-height: 0.98;
+  line-height: 1.04;
   text-wrap: balance;
 }
 
 h1 {
   font-family: var(--fonte-display);
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-display);
-  line-height: 0.98;
-  font-size: clamp(2.5rem, 8.5vw, 7rem);
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  font-size: clamp(2.25rem, 6.2vw, 4.75rem);
   text-wrap: balance;
 }
 
 h2 {
   font-family: var(--fonte-display);
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: var(--tracking-display);
-  /* 1.08 e não 1: o acento precisa caber dentro da linha. */
-  line-height: 1.08;
-  font-size: clamp(2rem, 6vw, 4.5rem);
+  line-height: 1.06;
+  font-size: clamp(2rem, 5.2vw, 4rem);
   text-wrap: balance;
 }
 
 h3 {
   font-family: var(--fonte-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  line-height: 1.2;
+}
+
+/* Destaque é 600 (§3), não o 700 que o preflight dá ao <strong>: em Sora, 700
+   dentro de prosa 400 pesa como título no meio da frase. */
+strong,
+b {
+  font-weight: 600;
 }
 
 p {

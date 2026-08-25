@@ -32,15 +32,13 @@
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Apenas os pesos usados: Orbitron 700 (so display), Rajdhani 400/600
-         (prosa) e JetBrains Mono 400/500 (dado). Pedir a familia inteira
-         baixaria o dobro de arquivos para usar cinco cortes. -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fontes auto-hospedadas (subconjunto latin, licenca OFL), em vez do CSS
+         do Google Fonts: aquele <link> era a maior fatia do caminho critico —
+         334 ms dos 401 ms ate o DOMContentLoaded, medido em 25/08/2026. Dois
+         arquivos, mesma origem, pre-carregados. `crossorigin` e obrigatorio
+         mesmo em same-origin: sem ele o Chrome baixa cada fonte duas vezes. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/sora-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrains-mono-latin.woff2" crossorigin />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 

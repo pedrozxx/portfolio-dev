@@ -301,15 +301,14 @@ a {
 .abertura__titulo {
   margin-block: var(--e5) var(--e6);
   color: var(--tinta-forte);
-  /* Orbitron em caixa alta com acento pede mais entrelinha do que o 0.98 do
-     display: o til de "PRODUÇÃO" e o agudo de "CÓDIGO" saem da caixa e encostam
-     na linha de cima. */
-  line-height: 1.06;
+  line-height: 1.04;
   /* Menor que o display máximo: com o retrato fora do hero, o título ganhou a
      tela toda e a 7rem passava a ocupar três linhas cheias, empurrando o
      parágrafo e os botões para fora da primeira dobra. */
   font-size: clamp(2.25rem, 6.2vw, 4.75rem);
-  max-inline-size: min(18ch, 100%);
+  /* `em`, não `ch`: o ch muda com a fonte de fallback, e o título trocava de
+     número de linhas quando a Sora chegava — 79px de salto no hero em inglês. */
+  max-inline-size: min(13.75em, 100%);
 }
 
 .abertura__apresentacao {
@@ -382,6 +381,10 @@ a {
 }
 .passagem__texto {
   color: var(--tinta-fraca);
+  /* `.display` dá família, peso e tracking, mas não tamanho — e sem esta linha
+     a frase saía nos 17px do corpo, sozinha em 80svh de tela. Medido no dist:
+     285×35px numa seção de 569px. */
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
   opacity: var(--passagem-opacidade, 1);
   transform: translate3d(0, var(--passagem-y, 0px), 0);
   max-inline-size: min(22ch, 100%);
@@ -545,22 +548,178 @@ a {
 
 /* ---------- capítulo de capacidade ---------- */
 
+/*
+ * Coluna única por padrão; duas colunas iguais acima de 1024px (DESIGN.md §6.2).
+ * Qual lado a figura ocupa é decidido pela ORDEM DO DOM em Capacidade.tsx — não
+ * há `order` nem `grid-template-areas` aqui, de propósito (§11).
+ */
 .capacidade__interno {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--e4);
+  gap: var(--e6);
   min-block-size: 62svh;
   align-content: center;
 }
+.capacidade__bloco {
+  min-inline-size: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e4);
+}
 .capacidade__titulo {
   margin-block: var(--e4) var(--e2);
-  max-inline-size: min(14ch, 100%);
+  max-inline-size: min(10.75em, 100%);
 }
 .capacidade__texto {
   margin-block-end: var(--e3);
 }
 .capacidade__stack {
   color: var(--tinta-fraca);
+}
+
+/*
+ * A figura (DESIGN.md §6.2) e os dois movimentos dela (§7, itens 7 e 8).
+ *
+ * `.figura` tem o `perspective` e NÃO se move. `.figura__palco` inclina com o
+ * ponteiro: `--px`/`--py` são escritos pelo useParalaxe nele mesmo. Cada
+ * `.fig__camada` desloca por `--dx`/`--dy`, escritos nela mesma, já
+ * multiplicados pela profundidade — e o `.fig__flutua` de dentro levita por
+ * keyframes. São dois `<g>` porque animação e propriedade base disputam o mesmo
+ * `transform`, e a animação vence: num elemento só o paralaxe morreria.
+ *
+ * `translate()` e não `translate3d()` nas camadas: são elementos SVG, e
+ * transformação 3D em elemento SVG não é garantida fora do Chrome.
+ */
+.figura {
+  inline-size: 100%;
+  max-inline-size: 22rem;
+  perspective: 1200px;
+}
+.figura__palco {
+  transform: rotateX(calc(var(--py) * -4deg)) rotateY(calc(var(--px) * 4deg));
+  transition: transform 0.7s var(--ease-out-expo);
+}
+.fig {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 4 / 3;
+  overflow: visible;
+}
+.fig__camada {
+  transform: translate(var(--dx), var(--dy));
+  transition: transform 0.7s var(--ease-out-expo);
+}
+.fig__flutua {
+  animation: flutuar var(--flutua, 6s) ease-in-out var(--flutua-atraso, 0s) infinite alternate;
+}
+@keyframes flutuar {
+  from {
+    transform: translate(0, -5px);
+  }
+  to {
+    transform: translate(0, 5px);
+  }
+}
+
+/* As formas: só classe, só token. Nenhum hex, nenhum texto (§6.2). */
+.fig__painel {
+  fill: var(--superficie);
+  stroke: var(--fio-estrutural);
+  stroke-width: 1.5;
+}
+.fig__painel--alta {
+  fill: var(--superficie-alta);
+}
+.fig__campo {
+  fill: var(--papel);
+  stroke: var(--fio-estrutural);
+  stroke-width: 1.5;
+}
+.fig__fio {
+  fill: none;
+  stroke: var(--fio-estrutural);
+  stroke-width: 1.5;
+}
+.fig__fio--fraco {
+  stroke: var(--fio);
+}
+.fig__barra {
+  fill: var(--tinta-fraca);
+  opacity: 0.6;
+}
+.fig__barra--apagada {
+  opacity: 0.32;
+}
+.fig__forte {
+  fill: var(--tinta-forte);
+  opacity: 0.92;
+}
+.fig__acento {
+  fill: var(--acento);
+}
+.fig__acento-fio {
+  fill: none;
+  stroke: var(--acento);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fig__traco--grosso {
+  stroke-width: 2.5;
+}
+.fig__traco-contraste {
+  fill: none;
+  stroke: var(--acento-contraste);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fig__estado {
+  fill: var(--estado);
+}
+.fig__estado-fio {
+  fill: none;
+  stroke: var(--estado);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.fig__tracejado {
+  stroke-dasharray: 4 5;
+}
+
+@media (min-width: 1024px) {
+  /*
+   * A decisão de duas colunas é em rem, não no breakpoint em px: `auto-fit`
+   * com mínimo de 27rem dá duas colunas a partir de 1024px na fonte padrão —
+   * e volta sozinho a UMA coluna no zoom de texto a 200%, quando 27rem viram
+   * 864px. Com `1fr 1fr` fixo, o parágrafo ficava com ~20 caracteres por linha
+   * a 200% (WCAG 1.4.4), e o gate de estouro não pegava porque nada estourava.
+   */
+  .capacidade__interno {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr));
+    gap: var(--e8);
+    align-items: center;
+  }
+  .figura {
+    max-inline-size: 32rem;
+  }
+  /* Só a figura que vem DEPOIS do texto (capítulo 03) encosta na borda direita,
+     espelhando as que encostam na esquerda. Sem `order`: é o irmão seguinte. */
+  .capacidade__bloco + .figura {
+    justify-self: end;
+  }
+}
+
+/* Movimento reduzido: a figura fica em repouso, que é o estado base (§1.1). */
+@media (prefers-reduced-motion: reduce) {
+  .fig__flutua {
+    animation: none;
+  }
+  .figura__palco,
+  .fig__camada {
+    transition: none;
+    transform: none;
+  }
 }
 
 /* ---------- radar (herdado, agora só no cartão) ---------- */
@@ -621,7 +780,6 @@ a {
 .trilho__titulo {
   font-family: var(--fonte-display);
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: var(--tracking-display);
   line-height: 1.04;
   font-size: clamp(2rem, 4.6vw, 3.75rem);
@@ -647,6 +805,28 @@ a {
   display: flex;
   flex-direction: column;
   gap: var(--e5);
+  /* Vinheta radial no acento, a 8%: e o que da ao cartao translucido (S5) algo
+     para deixar passar. Sem ela o papel atras e chapado e "translucido" vira
+     "um pouco mais claro". E o mesmo recurso do banner do LinkedIn do Pedro
+     (vinheta radial a 7%), pintado uma vez e nunca repintado: e fundo estatico
+     da pista, nao do cartao que se move. */
+}
+/*
+ * `color-mix` só sob `@supports`, e o motivo é medido: o Tailwind v4 passa o
+ * CSS pelo Lightning CSS, que emite um fallback antes de cada color-mix — e o
+ * fallback que ele escolheu para a vinheta era `var(--acento)` a 100%. Num
+ * navegador sem color-mix (anteriores a 2023) isso é uma mancha laranja atrás
+ * do trilho. Fora do @supports, o fallback é explícito e seguro: nenhuma
+ * vinheta, cartão opaco na superfície.
+ */
+@supports (background: color-mix(in oklab, red 8%, transparent)) {
+  .trilho__pista {
+    background: radial-gradient(
+      58% 72% at 62% 48%,
+      color-mix(in oklab, var(--acento) 8%, transparent),
+      transparent 72%
+    );
+  }
 }
 
 /*
@@ -691,16 +871,29 @@ a {
   transform: translate3d(calc(var(--trilho) * -1px), 0, 0);
 }
 
+/*
+ * Translúcido, não opaco (DESIGN.md §5): o papel e o numeral fantasma aparecem
+ * através do cartão conforme ele desliza. Sem `backdrop-filter` — sete cartões
+ * desfocando o fundo a cada quadro do trilho custam repintura inteira da pista,
+ * e o papel atrás é chapado: não há o que desfocar.
+ *
+ * O contraste do texto fica entre os dois pares medidos (sobre superfície e
+ * sobre papel), porque a mistura só interpola entre esses dois fundos.
+ */
 .cartao {
   flex: 0 0 clamp(17rem, 30vw, 24rem);
   scroll-snap-align: center;
   display: flex;
   flex-direction: column;
+  /* Opaco por padrão; o translúcido entra sob @supports, logo abaixo. */
   background: var(--superficie);
   border: 1px solid var(--fio-estrutural);
-  border-radius: var(--raio);
+  border-radius: var(--raio-cartao);
   min-inline-size: 0;
-  transition: border-color var(--transicao), transform var(--transicao);
+  transition:
+    border-color var(--transicao),
+    transform var(--transicao),
+    background-color var(--transicao);
 }
 .cartao:hover {
   border-color: var(--acento);
@@ -709,8 +902,37 @@ a {
 .cartao:focus-within {
   border-color: var(--acento);
 }
+/* O recorte pelo raio acontece SÓ aqui, que não hospeda nada focável — o anel
+   de foco dos links do corpo continua inteiro (§5). */
 .cartao__captura {
+  overflow: clip;
+  border-start-start-radius: calc(var(--raio-cartao) - 1px);
+  border-start-end-radius: calc(var(--raio-cartao) - 1px);
   border-block-end: 1px solid var(--fio);
+}
+@supports (background: color-mix(in oklab, red 8%, transparent)) {
+  .cartao {
+    background: color-mix(in oklab, var(--superficie) 54%, transparent);
+    border-color: color-mix(in oklab, var(--fio-estrutural) 55%, transparent);
+    /* Realce de 1px na aresta de cima e sombra tingida no papel: é o que separa
+       "vidro" de "retângulo mais claro". */
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--tinta-forte) 8%, transparent),
+      0 28px 44px -30px color-mix(in oklab, var(--papel) 85%, transparent);
+  }
+  .cartao:hover,
+  .cartao:focus-within {
+    border-color: var(--acento);
+  }
+  .cartao:hover {
+    background: color-mix(in oklab, var(--superficie) 74%, transparent);
+  }
+  .cartao__captura {
+    border-block-end-color: color-mix(in oklab, var(--fio-estrutural) 35%, transparent);
+  }
+  .cartao__placa {
+    background: color-mix(in oklab, var(--superficie-alta) 70%, transparent);
+  }
 }
 .cartao__captura img {
   border: 0;
@@ -747,7 +969,8 @@ a {
   text-transform: uppercase;
   color: var(--tinta-fraca);
   border: 1px solid var(--fio-estrutural);
-  padding: var(--e1) var(--e2);
+  border-radius: var(--raio-pilula);
+  padding: var(--e1) var(--e3);
 }
 .cartao__nome {
   color: var(--tinta-forte);
@@ -964,7 +1187,7 @@ a {
 }
 .sobre__curso {
   color: var(--tinta-forte);
-  font-weight: 500;
+  font-weight: 600;
 }
 .sobre__instituicao {
   color: var(--tinta-fraca);

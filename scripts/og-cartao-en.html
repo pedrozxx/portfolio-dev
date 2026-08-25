@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   /*
     Cartão de compartilhamento, 1200x630 -> public/og-en.png.
@@ -21,20 +21,11 @@
     como importar o CSS aqui (o Chrome headless abre este arquivo sozinho), então
     a duplicação é consciente: se os tokens mudarem, este arquivo muda junto.
   */
-  /* Orbitron desenha o til como crase — ver o comentário longo em
-     src/estilos/tokens.css. Estes seis pontos de código vêm de fonte de sistema. */
-  @font-face {
-    font-family:'Til Correto';
-    src: local('Segoe UI Semibold'), local('Segoe UI'), local('Helvetica Neue'),
-         local('Arial'), local('Liberation Sans'), local('DejaVu Sans');
-    font-weight: 100 900;
-    unicode-range: U+00C3, U+00E3, U+00D5, U+00F5, U+00D1, U+00F1;
-  }
   * { margin:0; padding:0; box-sizing:border-box; }
   html,body { width:1200px; height:630px; overflow:hidden; }
   body {
     background:#05060A; color:#D4CFC5;
-    font-family:'Rajdhani',sans-serif;
+    font-family:'Sora',sans-serif;
     display:flex; flex-direction:column; justify-content:center;
     padding:0 96px; position:relative;
   }
@@ -46,11 +37,11 @@
   }
   .sobrancelha::before { content:''; width:56px; height:2px; background:#FF6B35; }
   h1 {
-    font-family:'Til Correto','Orbitron',sans-serif; font-weight:700;
-    font-size:52px; letter-spacing:-.01em; margin:28px 0 20px;
-    line-height:1.1; max-width:19ch; color:#F2EDE3;
+    font-family:'Sora',sans-serif; font-weight:700;
+    font-size:48px; letter-spacing:-.025em; margin:28px 0 20px;
+    line-height:1.1; max-width:21ch; color:#F2EDE3;
   }
-  .apoio { font-size:26px; line-height:1.4; max-width:46ch; color:#8A8680; }
+  .apoio { font-size:26px; line-height:1.4; max-width:60ch; color:#8A8680; }
   .regua { display:flex; gap:44px; margin-top:32px; padding-top:24px; border-top:1px solid #6E6960; }
   .item { display:flex; flex-direction:column; gap:4px; }
   .valor { font-family:'JetBrains Mono',monospace; font-weight:500; font-size:26px; font-variant-numeric:tabular-nums; color:#F2EDE3; }

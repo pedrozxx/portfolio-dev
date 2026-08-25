@@ -7,8 +7,8 @@
  * turquesa por três reescritas de direção enquanto o site virava laranja — a
  * peça que aparece no WhatsApp e no LinkedIn era a última a ser lembrada.
  *
- * Por que Chrome e não sharp: o rasterizador de SVG do sharp não tem Orbitron,
- * Rajdhani nem JetBrains Mono instaladas, cai em fonte com serifa e perde os
+ * Por que Chrome e não sharp: o rasterizador de SVG do sharp não tem Sora nem
+ * JetBrains Mono instaladas, cai em fonte com serifa e perde os
  * acentos. Fonte errada numa peça de marca é o defeito mais visível possível.
  */
 import { execFileSync } from 'node:child_process'

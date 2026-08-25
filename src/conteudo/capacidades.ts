@@ -19,10 +19,18 @@ export interface Capacidade {
   readonly id: string
   readonly numero: string
   readonly sobrancelha: Bilingue
-  /** Curto e em caixa alta: vai em Orbitron, no tamanho de display. */
+  /** Curto, uma frase com ponto: vai em Sora 700, no tamanho de display. */
   readonly titulo: Bilingue
   readonly texto: Bilingue
   readonly stack: readonly string[]
+  /** Qual composição de DESIGN.md §6.2 desenha o mecanismo deste capítulo. */
+  readonly figura: 'camadas' | 'alcada' | 'captacao'
+  /**
+   * De que lado a figura fica acima de 1024px. Pedido do autor: 01 e 02 com a
+   * figura à esquerda e o texto à direita; 03 ao contrário. A alternância vai
+   * para a ordem do DOM, não para `order` (banido em §11).
+   */
+  readonly lado: 'esquerda' | 'direita'
 }
 
 export const CAPACIDADES: readonly Capacidade[] = [
@@ -36,6 +44,8 @@ export const CAPACIDADES: readonly Capacidade[] = [
       en: 'Interface, API, database and deployment. The internal dashboards I built at Norte Geradores are opened every day by the sales, procurement and operations teams — the sales BI became leadership’s official source of truth. When the front end gets heavy, I cut: the lead-capture landing page’s main component went from 1,563 lines to 93.',
     },
     stack: ['React', 'TypeScript', 'Vite', 'Node.js', 'FastAPI'],
+    figura: 'camadas',
+    lado: 'esquerda',
   },
   {
     id: 'ia',
@@ -47,6 +57,8 @@ export const CAPACIDADES: readonly Capacidade[] = [
       en: 'I integrate AI APIs — Anthropic and Google Gemini — inside automations that were already running. The procurement agent proposes, never decides on its own: every request goes through tiered approval and is logged, with a Telegram bot notifying whoever needs to approve. A model that acts with no approval trail is not automation, it is risk.',
     },
     stack: ['Anthropic', 'Google Gemini', 'Python', 'Telegram Bot'],
+    figura: 'alcada',
+    lado: 'esquerda',
   },
   {
     id: 'sites',
@@ -58,5 +70,7 @@ export const CAPACIDADES: readonly Capacidade[] = [
       en: 'Norte’s lead-capture landing page is live, in React and Express. Beyond rewriting its front end, I fixed a rate-limiting flaw that left the form open to mass submissions — an unthrottled public form is not a comfort bug, it is an open door. Outside work, editorial layouts in CSS Grid and study pages with animation.',
     },
     stack: ['React', 'Express', 'CSS Grid', 'Acessibilidade'],
+    figura: 'captacao',
+    lado: 'direita',
   },
 ] as const
