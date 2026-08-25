@@ -23,6 +23,8 @@ interface Props {
   readonly children: ReactNode
   /** Experiência não anima: é o texto que se lê devagar, copia e imprime. */
   readonly semMovimento?: boolean
+  /** Classe do capítulo específico, somada à casca. */
+  readonly classe?: string
 }
 
 export function Capitulo({
@@ -32,6 +34,7 @@ export function Capitulo({
   titulo,
   children,
   semMovimento = false,
+  classe,
 }: Props) {
   const { alvo, revelado } = useRevelar<HTMLElement>()
 
@@ -39,7 +42,7 @@ export function Capitulo({
     <section
       id={id}
       ref={semMovimento ? undefined : alvo}
-      className={`capitulo entra${!semMovimento && revelado ? ' entra--pronto' : ''}`}
+      className={`capitulo${classe ? ` ${classe}` : ''} entra${!semMovimento && revelado ? ' entra--pronto' : ''}`}
       aria-labelledby={`titulo-${id}`}
     >
       <span className="capitulo__fantasma" aria-hidden="true">

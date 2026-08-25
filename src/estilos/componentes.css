@@ -110,72 +110,6 @@
   flex: 0 0 auto;
 }
 
-.cabecalho__nav {
-  margin-inline-start: auto;
-  /* Nunca encolhe: encolher faz o conteúdo vazar por cima do vizinho, e como
-     container com foco não pode ter overflow hidden, o excedente apareceria
-     escrito por cima do botão. */
-  flex: 0 0 auto;
-}
-.cabecalho__lista {
-  display: flex;
-  gap: var(--e4);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.cabecalho__lista--vertical {
-  flex-direction: column;
-  gap: var(--e3);
-  padding-block: var(--e4);
-}
-
-.cabecalho__ancora {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--e2);
-  min-block-size: var(--alvo);
-  font-family: var(--fonte-mono);
-  font-size: 0.875rem;
-  letter-spacing: var(--tracking-rotulo);
-  text-transform: uppercase;
-  color: var(--tinta-fraca);
-  text-decoration: none;
-  flex-wrap: wrap;
-  min-inline-size: 0;
-  max-inline-size: 100%;
-  transition: color var(--transicao);
-}
-.cabecalho__ancora:hover {
-  color: var(--acento);
-}
-.cabecalho__ancora:active {
-  transform: translateY(1px);
-}
-/* Dois portadores no capítulo corrente: a cor E o aria-current. */
-.cabecalho__ancora[aria-current="true"] {
-  color: var(--tinta-forte);
-}
-.cabecalho__numero {
-  color: var(--acento);
-}
-
-.cabecalho__menu {
-  display: none;
-  margin-inline-start: auto;
-}
-.cabecalho__menu > summary {
-  min-block-size: var(--alvo);
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: var(--tinta-forte);
-  font-family: var(--fonte-mono);
-  font-size: var(--mono-base);
-  letter-spacing: var(--tracking-rotulo);
-  text-transform: uppercase;
-}
-
 .cabecalho__acoes {
   display: flex;
   align-items: center;
@@ -375,7 +309,7 @@ a {
      tela toda e a 7rem passava a ocupar três linhas cheias, empurrando o
      parágrafo e os botões para fora da primeira dobra. */
   font-size: clamp(2.25rem, 6.2vw, 4.75rem);
-  max-inline-size: 18ch;
+  max-inline-size: min(18ch, 100%);
 }
 
 .abertura__apresentacao {
@@ -405,7 +339,7 @@ a {
   align-items: center;
   gap: var(--e2);
   font-family: var(--fonte-mono);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   letter-spacing: var(--tracking-sobrancelha);
   text-transform: uppercase;
   color: var(--tinta-fraca);
@@ -450,7 +384,7 @@ a {
   color: var(--tinta-fraca);
   opacity: var(--passagem-opacidade, 1);
   transform: translate3d(0, var(--passagem-y, 0px), 0);
-  max-inline-size: 22ch;
+  max-inline-size: min(22ch, 100%);
   will-change: transform, opacity;
 }
 
@@ -620,7 +554,7 @@ a {
 }
 .capacidade__titulo {
   margin-block: var(--e4) var(--e2);
-  max-inline-size: 14ch;
+  max-inline-size: min(14ch, 100%);
 }
 .capacidade__texto {
   margin-block-end: var(--e3);
@@ -638,20 +572,6 @@ a {
   align-items: start;
   margin-block-start: var(--e6);
 }
-.radar__captura {
-  grid-column: captura;
-}
-.radar__texto {
-  grid-column: texto;
-  grid-row: 1;
-  min-inline-size: 0;
-}
-.radar__destinos {
-  display: flex;
-  gap: var(--e5);
-  flex-wrap: wrap;
-  margin-block-start: var(--e5);
-}
 .radar__captura img,
 .cartao__captura img {
   aspect-ratio: var(--proporcao-captura);
@@ -659,46 +579,6 @@ a {
   border: 1px solid var(--fio-estrutural);
   border-radius: var(--raio);
   inline-size: 100%;
-}
-
-.decisoes {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  margin-block-start: var(--e7);
-  border-block-start: 1px solid var(--fio);
-}
-.decisao {
-  display: grid;
-  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
-  gap: var(--e5);
-  align-items: baseline;
-  padding-block: var(--e5);
-  border-block-end: 1px solid var(--fio);
-  min-inline-size: 0;
-}
-.decisao > * {
-  min-inline-size: 0;
-}
-.decisao__rotulo {
-  font-family: var(--fonte-mono);
-  font-size: var(--mono-base);
-  font-weight: 500;
-  letter-spacing: var(--tracking-rotulo);
-  text-transform: uppercase;
-  color: var(--acento);
-}
-.decisao__fonte {
-  display: block;
-  font-family: var(--fonte-mono);
-  font-size: 0.875rem;
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--tinta-fraca);
-  margin-block-start: var(--e1);
-}
-.decisao__seta {
-  color: var(--acento);
 }
 
 /* ---------- trilho horizontal ---------- */
@@ -752,7 +632,7 @@ a {
 }
 .trilho__dica {
   color: var(--tinta-fraca);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   letter-spacing: var(--tracking-sobrancelha);
   text-transform: uppercase;
 }
@@ -862,7 +742,7 @@ a {
 }
 .cartao__selo {
   font-family: var(--fonte-mono);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   letter-spacing: var(--tracking-rotulo);
   text-transform: uppercase;
   color: var(--tinta-fraca);
@@ -1067,6 +947,29 @@ a {
   color: var(--tinta);
   margin: 0;
 }
+/*
+ * O <dd> da Formação empilha curso e instituição.
+ *
+ * Os dois <span> são adjacentes no JSX, e o JSX come a quebra de linha entre
+ * eles: sem regra nenhuma — que era o caso — eles caíam inline, colados, e o
+ * HTML publicado trazia "BSc in Information SystemsUniversidade Federal do Pará
+ * (UFPA) · Aug 2022 – Dec 2027" num fôlego só, no bloco de Formação de um
+ * portfólio de quem procura vaga.
+ */
+.sobre__formacao dd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e1);
+  margin: 0;
+}
+.sobre__curso {
+  color: var(--tinta-forte);
+  font-weight: 500;
+}
+.sobre__instituicao {
+  color: var(--tinta-fraca);
+}
+
 .sobre__assumir {
   margin: 0;
   padding-inline-start: var(--e5);
@@ -1092,10 +995,6 @@ a {
   inline-size: fit-content;
   margin-inline: auto;
   text-align: start;
-}
-.contato__pergunta {
-  margin-block: var(--e5) var(--e6);
-  color: var(--tinta-forte);
 }
 .contato__sub {
   margin-inline: auto;

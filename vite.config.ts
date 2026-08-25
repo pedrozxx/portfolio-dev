@@ -12,6 +12,26 @@ export default defineConfig({
   base,
   plugins: [react(), tailwindcss()],
   build: {
+    /*
+     * Captura de projeto nunca é embutida como data URI.
+     *
+     * O padrão do Vite embute todo asset abaixo de 4 KB. `conversor-de-valor`
+     * cabia nesse limite, e o resultado medido foi ruim de um jeito específico:
+     * a mesma imagem entrava TRÊS vezes no documento — no `srcSet` do
+     * `<source>` avif, no do webp e no `src` do `<img>` — somando 11,3 KB de
+     * base64 em cada idioma, 19% do HTML publicado.
+     *
+     * E é o pior candidato possível a inline: o cartão 02 está abaixo da dobra
+     * e a imagem é `loading="lazy"`. Como arquivo, quem não rola nunca a baixa;
+     * embutida, todo mundo paga por ela antes da primeira pintura — inclusive
+     * quem só abriu a página para ler o hero.
+     *
+     * `false` desliga o inline só para essa pasta; ícone SVG pequeno em outro
+     * lugar continua embutido, que ali o inline compensa.
+     */
+    assetsInlineLimit: (caminho: string) =>
+      /[\/]assets[\/]projetos[\/]/.test(caminho) ? false : undefined,
+
     // Duas entradas HTML de verdade, não uma SPA com rota no cliente: o Google
     // indexa /portfolio-dev/ em português e /portfolio-dev/en/ em inglês, cada uma
     // com seu <html lang>, seu <title> e seu hreflang. Rota no cliente entregaria

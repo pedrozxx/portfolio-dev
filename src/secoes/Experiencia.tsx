@@ -4,7 +4,7 @@ import { textos } from '../i18n'
 import { Capitulo } from './Capitulo'
 
 /**
- * Capítulo 02 — Experiência (DESIGN.md §5.6 e §10, item 03).
+ * Capítulo 05 — Experiência (DESIGN.md §6, item 05, e §10.1).
  *
  * Nada anima aqui: é o texto que o recrutador lê devagar, copia e imprime.
  *

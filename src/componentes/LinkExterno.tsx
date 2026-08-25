@@ -25,10 +25,24 @@ interface Props {
 
 export function LinkExterno({ href, children, descreve, className, novaAba = true }: Props) {
   const alvo = novaAba ? { target: '_blank', rel: 'noopener noreferrer' } : {}
+
+  /*
+   * `.link-externo` é o padrão, não um extra que cada chamada precisa lembrar.
+   *
+   * Antes o componente repassava só o `className` recebido — e nenhuma das três
+   * chamadas passava um. Resultado medido no HTML publicado: os quinze links de
+   * destino dos cartões saíam sem atributo `class` nenhum, herdando apenas
+   * `a { color: var(--acento) }`. Perdiam a fonte mono, o caixa-alta, o alvo de
+   * 48px que a WCAG 2.2 §2.5.8 pede — e, ironicamente, o `flex-wrap: nowrap`
+   * que o próprio CSS ganhou para impedir a seta de cair sozinha numa segunda
+   * linha. O conserto estava escrito e desligado.
+   */
+  const classe = className ? `link-externo ${className}` : 'link-externo'
+
   return (
     <a
       href={href}
-      className={className}
+      className={classe}
       {...alvo}
       {...(descreve ? { 'aria-label': `${textoDe(children)} — ${descreve}` } : {})}
     >

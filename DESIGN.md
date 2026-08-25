@@ -77,7 +77,7 @@ obrigatório: **4,5:1** para texto, **3:1** para borda de controle e ícone.
 
 **Medições (escuro):** texto 13,05:1 · tinta forte 17,36:1 · tinta fraca 5,60:1 ·
 acento 7,14:1 · acento sobre superfície 6,59:1 · fio estrutural 3,72:1 (papel) e
-3,43:1 (superfície) · estado 7,20:1.
+3,43:1 (superfície) · estado 11,37:1.
 
 ### 2.2 Claro
 
@@ -146,13 +146,19 @@ Três famílias, cinco cortes, todas no Google Fonts.
 ### 3.1 Regras duras
 
 1. **Nada abaixo de 14px**, e nada abaixo de 16px em texto corrido.
-2. **Orbitron pede entrelinha maior que 1.** O til de `PRODUÇÃO` e o agudo de `CÓDIGO`
+2. **Orbitron não sabe desenhar til, e por isso o til vem de fora.** Medido a 76px no
+   Chrome, lado a lado: o `ã` do Orbitron sai idêntico ao `à`, e o `õ` sai como `ò`.
+   O H1 em português deste site era publicado como "produçào". Seis pontos de código
+   (`ã õ Ã Õ ñ Ñ`) saem do Orbitron por um `@font-face` com `unicode-range` em
+   `tokens.css`; todo o resto continua Orbitron. Nenhuma fonte da direção resolve:
+   o til do Rajdhani é um breve (`ă`).
+3. **Orbitron pede entrelinha maior que 1.** O til de `PRODUÇÃO` e o agudo de `CÓDIGO`
    saem da caixa: com `line-height: 0.98` encostavam na linha de cima, e com
    `scroll-padding-top` curto a âncora parava com o acento por baixo do cabeçalho.
-3. **Mono é a voz de todo DADO; Rajdhani é a voz de toda PROSA.** Frase com sujeito e
+4. **Mono é a voz de todo DADO; Rajdhani é a voz de toda PROSA.** Frase com sujeito e
    verbo é Rajdhani, sempre. Prosa em mono é proibida.
-4. Separador de milhar pt-BR: **1.563**, nunca `1,563`.
-5. **Banido:** `Inter`, serifa, `#000000`, gradiente em título, barra de proficiência.
+5. Separador de milhar pt-BR: **1.563**, nunca `1,563`.
+6. **Banido:** `Inter`, serifa, `#000000`, gradiente em título, barra de proficiência.
 
 ---
 
@@ -309,19 +315,26 @@ cartões passavam por cima do bloco de texto e o cobriam. A pista recebe
 rolagem e mataria o `sticky` do palco — e só enquanto o deslizamento está ativo, via
 `:has()`.
 
-1. **Teclado.** Quando o foco entra na lista, o deslizamento **desliga**: o `transform`
+1. **Teclado.** Quando o foco **de teclado** entra na lista, o deslizamento **desliga**: o `transform`
    sai, `overflow-x` volta a `auto`, e um efeito traz o elemento focado à vista com
    `scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'instant' })`.
    Isso é obrigatório e foi medido: sem ele, o link do último cartão recebia foco em
    **x=2193 numa janela de 1440** — foco fora da tela. Uma vez desligado, fica
    desligado: religar jogaria fora onde a pessoa estava.
-   *Verificado:* 11 paradas de foco no trilho, todas alcançáveis.
+   **Só teclado**, e a distinção é `:focus-visible`: `onFocusCapture` dispara também
+   no clique de mouse num link do cartão, e como o desligamento é definitivo, um
+   clique matava a animação pelo resto da visita — num trilho cujos links todos
+   abrem em nova aba, ou seja, exatamente o gesto mais comum ali.
+   Enquanto o deslizamento está desligado, o contador, a barra e o nome passam a
+   ler a rolagem **nativa** da lista. Antes eles congelavam: a pessoa navegava até
+   o cartão 07 e o rodapé continuava anunciando "01 / 07".
+   *Verificado:* 14 paradas de foco no trilho (7 cartões), todas alcançáveis.
 2. **Celular.** Abaixo de 768px o efeito não existe — lista vertical, sem prender, sem
    rodapé de trilho. *Verificado:* `position: static`, `flex-direction: column`.
 3. **Movimento reduzido.** Mesma coisa.
 4. **Sem JavaScript.** A lista nasce como lista com rolagem horizontal nativa.
 
-O contador `03 / 06`, a barra e o nome corrente são `aria-hidden`: quem não vê o
+O contador `03 / 07`, a barra e o nome corrente são `aria-hidden`: quem não vê o
 deslocamento não ganha nada com a posição dele, e a `<ul>` já anuncia o total.
 
 ---
@@ -356,6 +369,23 @@ deslocamento não ganha nada com a posição dele, e a `<ul>` já anuncia o tota
    larguras e nos dois zooms, console limpo, foco alcançável no trilho, fallback de
    celular. "Compilou" não é prova.
 4. **Nenhum número na tela sem origem verificável.**
+
+---
+
+### 10.1 Regras editoriais que os testes cobram
+
+Estas não eram normativas em lugar nenhum — os testes as exigiam e o documento
+não as dizia, o que é a mesma dívida ao contrário: a regra existia só na cabeça de
+quem escreveu o teste.
+
+- **A empresa júnior não chama o trabalho dela de "cliente".** Trabalho de empresa
+  júnior é trabalho de empresa júnior; a palavra empresta um porte que não houve.
+- **Quem tem código fechado explica por quê**, com a frase daquela entrada — nunca
+  uma justificativa genérica repetida.
+- **Toda decisão de engenharia carrega procedência**, e nenhuma procedência se
+  repete: carimbo repetido é sinal de par trocado.
+- **Todo número exibido é número**, não adjetivo.
+- **Todo projeto tem pelo menos um link.** Cartão sem saída não entra.
 
 ---
 

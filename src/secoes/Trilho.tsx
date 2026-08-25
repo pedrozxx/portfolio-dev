@@ -1,5 +1,5 @@
-import { useRef, type CSSProperties } from 'react'
-import type { Idioma } from '../conteudo/projetos'
+import type { CSSProperties } from 'react'
+import type { Bilingue, Idioma } from '../conteudo/projetos'
 import { PROJETOS } from '../conteudo/projetos'
 import { PROJETOS_MENORES } from '../conteudo/projetos-menores'
 import { textos } from '../i18n'
@@ -34,6 +34,16 @@ const ARQUIVO_DA_CAPTURA: Record<string, string> = {
   'clube-de-assinatura': 'clube-assinatura',
 }
 
+/**
+ * O número do capítulo, num lugar só.
+ *
+ * Ele aparecia duas vezes neste componente — no numeral fantasma do fundo e na
+ * sobrancelha — e as duas cópias tinham que concordar para o `aria-hidden` do
+ * fantasma se justificar (ele é escondido do leitor de tela justamente porque
+ * repete o que a sobrancelha já diz em texto).
+ */
+const NUMERO = '04'
+
 /** Quantas telas de rolagem o trilho consome. Mais que isto vira pedágio. */
 const TELAS_DE_PERCURSO = 4
 
@@ -48,7 +58,6 @@ interface Cartao {
   readonly alt: Bilingue | null
 }
 
-type Bilingue = Readonly<Record<Idioma, string>>
 
 /**
  * O carro-chefe entra como cartão 01, não como capítulo próprio.
@@ -59,7 +68,7 @@ type Bilingue = Readonly<Record<Idioma, string>>
  * troca que esta direção cobra: o formato é o do trilho, e o trilho não comporta
  * quatro parágrafos por item.
  */
-function montarCartoes(idioma: Idioma): readonly Cartao[] {
+function montarCartoes(): readonly Cartao[] {
   const radar = PROJETOS.find((p) => p.destaque)
   const lista: Cartao[] = []
 
@@ -91,16 +100,14 @@ function montarCartoes(idioma: Idioma): readonly Cartao[] {
     })
   }
 
-  void idioma
   return lista
 }
 
 export function Trilho({ idioma }: { readonly idioma: Idioma }) {
   const t = textos(idioma)
-  const cartoes = montarCartoes(idioma)
+  const cartoes = montarCartoes()
   const total = cartoes.length
-  const { secao, indice, ativo, desliza, aoFocar } = useTrilhoHorizontal(total)
-  const lista = useRef<HTMLUListElement | null>(null)
+  const { secao, lista, barra, indice, ativo, desliza, aoFocar } = useTrilhoHorizontal(total)
 
   const atual = cartoes[indice]
 
@@ -119,13 +126,13 @@ export function Trilho({ idioma }: { readonly idioma: Idioma }) {
       aria-labelledby="titulo-projetos"
     >
       <span className="capitulo__fantasma" aria-hidden="true">
-        04
+        {NUMERO}
       </span>
 
       <div className="trilho__palco">
         <div className="trilho__texto">
           <p className="sobrancelha">
-            <span className="capitulo__numero">04</span>
+            <span className="capitulo__numero">{NUMERO}</span>
             <span>{idioma === 'pt' ? 'PROJETOS PUBLICADOS' : 'PUBLISHED PROJECTS'}</span>
           </p>
 
@@ -233,7 +240,7 @@ export function Trilho({ idioma }: { readonly idioma: Idioma }) {
             <span>
               {String(indice + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
             </span>
-            <span className="trilho__barra" />
+            <span className="trilho__barra" ref={barra} />
             <span className="trilho__atual">{atual ? atual.nome[idioma] : ''}</span>
           </div>
         </div>

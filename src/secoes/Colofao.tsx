@@ -3,7 +3,7 @@ import { textos } from '../i18n'
 import { home } from '../caminhos'
 
 /**
- * Colofão (DESIGN.md §10, item 07).
+ * Colofão (DESIGN.md §6, última linha).
  *
  * Colofão de livro impresso: a página declara as próprias medidas. Nenhum
  * template faz isso, porque nenhum template as escolheu — e é auditável com o

@@ -7,7 +7,7 @@ import { useCopiar } from '../hooks/useCopiar'
 import { EnvelopeSimple, GithubLogo, LinkedinLogo } from '../componentes/icones'
 
 /**
- * Capítulo 05 — Contato (DESIGN.md §10, item 06).
+ * Capítulo 07 — Contato (DESIGN.md §6, item 07).
  *
  * O defeito que este componente existe para não repetir: no site antigo cada
  * item de contato era um <li> com um <a> vazio esticado por cima, com o texto
@@ -34,6 +34,7 @@ export function Contato({ idioma }: { readonly idioma: Idioma }) {
   return (
     <Capitulo
       id="contato"
+      classe="contato"
       numero="07"
       sobrancelha={idioma === 'pt' ? 'DISPONÍVEL · UTC−3' : 'AVAILABLE · UTC−3'}
       titulo={

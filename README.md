@@ -26,14 +26,24 @@ Ela é a tradução em layout do comportamento que o meu outro projeto já tem: 
 `soma 169 de 174 — o PNCP não informou valor em 5` em vez de somar como se fosse a
 lista inteira. Um número sem procedência não é sóbrio: é inventado.
 
-`Registro` é o componente que aplica essa regra, e o tipo dele exige a fonte:
+Quem aplica essa regra são os testes de conteúdo, que rodam no CI antes de qualquer
+publicação:
 
-```tsx
-export function Registro({ fonte, forte, children }: Props)
+```
+✓ toda decisão tem procedência
+✓ nenhuma procedência se repete — carimbo repetido é sinal de par trocado
+✓ todo número exibido é um número, não um adjetivo
+✓ quem tem código fechado explica por quê, com a frase daquela entrada
+✓ todo projeto tem pelo menos um link — sem cartão sem saída
 ```
 
-Não há como renderizar uma afirmação sem procedência. A regra editorial virou erro
-de compilação em vez de lembrete num documento que ninguém relê.
+A regra editorial é verificada a cada push, não confiada à memória de quem escreve.
+
+> Este parágrafo já descreveu um componente `Registro` cujo tipo exigiria a fonte —
+> "não há como renderizar uma afirmação sem procedência". **Esse componente nunca
+> existiu no repositório.** Um README que inventa o mecanismo com que prova não
+> inventar é o pior defeito possível aqui, e ele sobreviveu a três reescritas porque
+> ninguém rodou `grep`. Fica registrado em vez de apagado.
 
 ## O que este repositório resolve
 
@@ -62,17 +72,20 @@ dimensão, `hreflang` ausente — e verifica se o pré-render de fato injetou co
 
 Feitas no navegador, não deduzidas do CSS — especificidade e cascata derrubam dedução.
 
+Medido em 20/08/2026, no build de produção servido por `vite preview`.
+
 | O que | Resultado |
 | --- | --- |
 | Estouro horizontal em 320, 390, 768, 1024, 1280, 1366 e 1440px | nenhum |
-| O mesmo, com zoom de texto a 150% e 200% (WCAG 1.4.4) | nenhum |
+| O mesmo, com zoom de texto a 150% e 200% (WCAG 1.4.4) — 21 combinações | nenhum |
 | Console no build de produção | limpo |
-| Texto no `#root` sem executar JavaScript | 7.710 caracteres (PT) · 7.556 (EN) |
-| Contraste, tema claro | texto 17,03:1 · acento 5,87:1 · fio estrutural 3,99:1 |
-| Contraste, tema escuro | texto 15,93:1 · acento 8,13:1 · fio estrutural 5,25:1 |
-| Matiz do acento, claro × escuro | 173,1° × 173,7° — 0,6° de diferença |
+| Texto no `#root` sem executar JavaScript | 8.070 caracteres (PT) · 7.911 (EN) |
+| Contraste, tema claro | texto 16,02:1 · acento 6,03:1 · fio estrutural 3,81:1 |
+| Contraste, tema escuro | texto 13,05:1 · acento 7,14:1 · fio estrutural 3,72:1 |
+| Matiz do acento, claro × escuro | 19,4° × 16,0° — 3,4° de diferença |
 | Capturas de tela servidas a uma tela 1x | 74 KB em AVIF, contra 417 KB de origem |
-| Testes | 135 |
+| Paradas de foco dentro do trilho horizontal | 14, todas alcançáveis |
+| Testes | 136 |
 
 Três defeitos que só apareceram porque a medição foi feita, e que nenhum deles
 mostrava uma caixa fora da tela:

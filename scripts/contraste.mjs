@@ -87,6 +87,27 @@ const PARES = {
 const blocoEscuro = css.slice(css.indexOf(':root {'), css.indexOf('@media'))
 const blocoClaro = css.slice(css.indexOf(':root[data-tema="claro"]'))
 
+/*
+ * O TERCEIRO bloco — o que a maioria das pessoas de fato vê.
+ *
+ * O tema claro existe em dois lugares: `@media (prefers-color-scheme: light)`,
+ * que atende quem nunca tocou no alternador, e `:root[data-tema="claro"]`, que
+ * atende quem escolheu. Só o segundo estava sendo medido. Alguém podia ajustar
+ * um hex dentro da media query — o caminho padrão, o de maior tráfego — e
+ * derrubar o contraste sem que uma única verificação apitasse.
+ *
+ * A regra do DESIGN.md §2.4 é que os dois blocos claros digam a mesma coisa.
+ * Então não basta medir o da media query: o certo é exigir que sejam idênticos,
+ * porque duas paletas claras diferentes já são o defeito, mesmo que as duas
+ * passem na WCAG.
+ */
+const iMedia = css.indexOf('@media (prefers-color-scheme: light)')
+if (iMedia === -1) {
+  console.error('contraste: não achei o bloco @media (prefers-color-scheme: light) em tokens.css.')
+  process.exit(1)
+}
+const blocoMedia = css.slice(iMedia, css.indexOf(':root[data-tema="claro"]'))
+
 const doCss = (bloco, nome) => {
   // Regex montada com RegExp: numa string, '\s' vira apenas 's' — o padrão saía
   // como "--papels*:s*(#…)" e nunca casava. Com a barra dobrada, casa.
@@ -106,6 +127,19 @@ for (const [modo, mapa] of Object.entries(PARES)) {
     }
   }
 }
+// Os dois blocos claros precisam declarar exatamente os mesmos hexes.
+for (const nomeCss of Object.values(PARES.claro)) {
+  const naMedia = doCss(blocoMedia, nomeCss)
+  const noAtributo = doCss(blocoClaro, nomeCss)
+  if (naMedia !== noAtributo) {
+    console.error(
+      `DIVERGE  claro.${nomeCss}: @media=${naMedia} [data-tema="claro"]=${noAtributo} ` +
+        `— quem segue o sistema veria uma paleta e quem escolheu veria outra.`,
+    )
+    divergencias++
+  }
+}
+
 if (divergencias > 0) {
   console.error(`${divergencias} token(s) divergem entre tokens.css e tokens.json. O build para aqui.`)
   process.exit(1)

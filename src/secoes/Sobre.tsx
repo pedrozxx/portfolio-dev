@@ -3,7 +3,7 @@ import { textos } from '../i18n'
 import { Capitulo } from './Capitulo'
 
 /**
- * Capítulo 04 — Sobre (DESIGN.md §10, item 05).
+ * Capítulo 06 — Sobre (DESIGN.md §6, item 06).
  *
  * A stack é um <dl> de verdade, não uma nuvem de logos: é a superfície de Ctrl+F
  * e de ATS, e é assim que um robô de triagem encontra "FastAPI".

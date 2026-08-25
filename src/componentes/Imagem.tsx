@@ -32,16 +32,59 @@ function url(nome: string, formato: string, dobro = false): string | undefined {
   return ARQUIVOS[chave]
 }
 
+/**
+ * Monta o `srcSet` com as variantes que existem de verdade.
+ *
+ * A versão anterior era `[url(...), `${url(..., true)} 2x`].filter(Boolean)`, e o
+ * `filter` ali era decorativo: quando a variante @2x não existe, a interpolação
+ * já produziu a string `"undefined 2x"` — que é truthy e passa direto. Medido:
+ * o atributo publicado virava `srcSet="/radar.avif, undefined 2x"`, e o
+ * navegador que escolhesse o candidato 2x pedia uma URL chamada `undefined`.
+ *
+ * Agora o descritor só é montado depois de a variante ser confirmada, e um
+ * conjunto vazio devolve `undefined` — o React omite o atributo em vez de
+ * emitir `srcSet=""`, que é inválido.
+ */
+function conjunto(nome: string, formato: string): string | undefined {
+  const base = url(nome, formato)
+  const dobro = url(nome, formato, true)
+
+  const partes = [base, dobro === undefined ? undefined : `${dobro} 2x`].filter(
+    (parte): parte is string => parte !== undefined,
+  )
+
+  return partes.length > 0 ? partes.join(', ') : undefined
+}
+
 export function Imagem({ nome, alt, width, height, className, prioritaria = false }: Props) {
-  const conjunto = (formato: string) =>
-    [url(nome, formato), `${url(nome, formato, true)} 2x`].filter(Boolean).join(', ')
+  const base = url(nome, 'webp')
+
+  /*
+   * Nome errado tem que quebrar o build, não a página.
+   *
+   * `nome` é `string`: qualquer erro de digitação compila. Antes, um nome que
+   * não resolvesse deixava o `<img>` sem `src` — o React omite o atributo — e o
+   * resultado era uma caixa de imagem quebrada com o alt, em produção, sem uma
+   * linha no console.
+   *
+   * Lançar aqui fecha o caminho inteiro: `npm run dev` mostra o overlay na hora,
+   * e `npm run build` falha no pré-render, porque o prerender roda este mesmo
+   * componente por `renderToString`. Uma captura faltando não consegue mais
+   * chegar ao ar.
+   */
+  if (base === undefined) {
+    throw new Error(
+      `Imagem: não existe nenhum arquivo para "${nome}" em src/assets/projetos/. ` +
+        `Disponíveis: ${Object.keys(ARQUIVOS).join(', ')}`,
+    )
+  }
 
   return (
     <picture>
-      <source type="image/avif" srcSet={conjunto('avif')} />
-      <source type="image/webp" srcSet={conjunto('webp')} />
+      <source type="image/avif" srcSet={conjunto(nome, 'avif')} />
+      <source type="image/webp" srcSet={conjunto(nome, 'webp')} />
       <img
-        src={url(nome, 'webp')}
+        src={base}
         alt={alt}
         width={width}
         height={height}

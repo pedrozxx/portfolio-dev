@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { PROJETOS, type Bilingue } from '../projetos'
 import { PROJETOS_MENORES } from '../projetos-menores'
@@ -64,7 +66,7 @@ describe('sistema interno nunca vira link', () => {
   })
 
   it('a empresa júnior não chama o trabalho dela de "cliente"', () => {
-    // DESIGN.md §5.6 proíbe a palavra na entrada da empresa júnior: chamar de
+    // DESIGN.md §10.1 proíbe a palavra na entrada da empresa júnior: chamar de
     // cliente o trabalho de EJ infla o cargo. Não é uma proibição global — a
     // Sea Telecom fala de "controle de clientes" da operadora, que é o cargo
     // dele descrito com a palavra certa, e essa fica.
@@ -163,5 +165,85 @@ describe('números', () => {
     // 1.563 e não 1,563. Um recrutador brasileiro lê "1,563" como um e meio.
     const ptInteiro = JSON.stringify(EXPERIENCIA).match(/"pt":"[^"]*"/g)?.join(' ') ?? ''
     expect(ptInteiro).not.toMatch(/\b\d{1,3},\d{3}\b/)
+  })
+})
+
+/*
+ * O DESIGN.md §3.1 declara "nada abaixo de 14px", e o rodapé do site linka esse
+ * documento. Até aqui a regra era uma promessa: três regras a violavam ao mesmo
+ * tempo — duas dicas a 13px e o selo do cartão ("NO AR") a 12px, que não é
+ * decoração, é conteúdo. Regra que ninguém verifica é regra que já quebrou.
+ */
+describe('piso tipográfico do DESIGN.md §3.1', () => {
+  const FOLHAS = ['base.css', 'componentes.css', 'tokens.css']
+
+  it('nenhuma regra declara fonte abaixo de 14px', () => {
+    const infratores: string[] = []
+
+    for (const folha of FOLHAS) {
+      const css = readFileSync(resolve(__dirname, '../../estilos', folha), 'utf8')
+      const linhas = css.split('\n')
+
+      linhas.forEach((linha, i) => {
+        const rem = linha.match(/font-size:\s*([\d.]+)rem/)
+        if (rem?.[1] && Number(rem[1]) * 16 < 14) {
+          infratores.push(`${folha}:${i + 1} — ${Number(rem[1]) * 16}px`)
+        }
+        const px = linha.match(/font-size:\s*([\d.]+)px/)
+        if (px?.[1] && Number(px[1]) < 14) {
+          infratores.push(`${folha}:${i + 1} — ${px[1]}px`)
+        }
+      })
+    }
+
+    expect(infratores, `abaixo do piso de 14px:\n${infratores.join('\n')}`).toEqual([])
+  })
+})
+
+/*
+ * O DESIGN.md é normativo e o rodapé do site linka para ele. Oito citações
+ * apontavam para seções que não existem (§2.5, §5.2, §5.5, §5.6, §6.2) e quatro
+ * mandavam o leitor para "§10, item 05" quando a tabela de capítulos é a §6 —
+ * três delas com o número de capítulo errado por cima. Referência quebrada num
+ * documento normativo é pior que comentário nenhum: ela promete uma regra que o
+ * leitor não vai achar, e ninguém percebe porque nada compila a partir dela.
+ */
+describe('citações ao DESIGN.md', () => {
+  const raiz = resolve(__dirname, '../../..')
+
+  it('toda seção citada existe no DESIGN.md', () => {
+    const design = readFileSync(resolve(raiz, 'DESIGN.md'), 'utf8')
+
+    const existentes = new Set(
+      [...design.matchAll(/^#{2,3}\s+(\d+(?:\.\d+)?)\.?\s/gm)].map((m) => m[1]),
+    )
+
+    const arquivos = [
+      'src/componentes/Botao.tsx',
+      'src/componentes/Marcadores.tsx',
+      'src/componentes/LinkExterno.tsx',
+      'src/conteudo/projetos.ts',
+      'src/estilos/tokens.css',
+      'src/secoes/Colofao.tsx',
+      'src/secoes/Contato.tsx',
+      'src/secoes/Experiencia.tsx',
+      'src/secoes/Sobre.tsx',
+      'README.md',
+    ]
+
+    const quebradas: string[] = []
+    for (const arq of arquivos) {
+      const texto = readFileSync(resolve(raiz, arq), 'utf8')
+      // Só as citações ao DESIGN.md; "WCAG 2.2 §2.5.8" não é deste documento.
+      for (const m of texto.matchAll(/DESIGN\.md[^\n]*?§(\d+(?:\.\d+)?)/g)) {
+        if (m[1] && !existentes.has(m[1])) quebradas.push(`${arq} → §${m[1]}`)
+      }
+    }
+
+    expect(
+      quebradas,
+      `citam seção inexistente:\n${quebradas.join('\n')}\n` +
+        `seções que existem: ${[...existentes].join(', ')}`,
+    ).toEqual([])
   })
 })

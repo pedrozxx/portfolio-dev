@@ -34,6 +34,17 @@ jobs:
       - name: Verificar tipos
         run: npm run typecheck
 
+      # Estas duas etapas existem no ci.yml e faltavam AQUI — e era só este
+      # workflow que publicava. O ci.yml podia ficar vermelho (teste quebrado,
+      # contraste abaixo do piso da WCAG) que o site ia ao ar do mesmo jeito,
+      # porque os dois workflows disparam no mesmo push e não se conhecem.
+      # Um portão que não fica no caminho não é portão.
+      - name: Testes
+        run: npm test
+
+      - name: Contraste
+        run: npm run contraste
+
       - name: Build
         # O Pages serve em /portfolio-dev/, não na raiz. Sem BASE_PATH o HTML
         # pediria /assets/... e receberia 404 — página em branco.

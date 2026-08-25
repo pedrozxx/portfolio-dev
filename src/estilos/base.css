@@ -134,7 +134,6 @@ p {
 p.mono,
 p.sobrancelha,
 p.marcadores,
-.regua p,
 .cargo__expediente,
 .colofao p {
   max-inline-size: none;
@@ -174,6 +173,21 @@ p.marcadores,
    */
   position: relative;
   padding-inline-start: calc(56px + var(--e4));
+
+  /*
+   * `anywhere`, não `break-word` — e a diferença é o defeito que isto conserta.
+   *
+   * Medido no build: 320px com zoom de texto a 200% dava 104px de estouro
+   * horizontal, e o culpado era uma sobrancelha de 409px numa viewport de 305.
+   * Caixa-alta, mono e 0,16em de tracking transformam "PUBLICADOS" numa palavra
+   * de 321px que não tem onde quebrar.
+   *
+   * `break-word` quebra na hora de pintar, mas NÃO entra no cálculo de
+   * min-content: a caixa continua sendo pedida grande e o pai continua
+   * estourando. `anywhere` conta na largura intrínseca, então a caixa encolhe de
+   * verdade. É a diferença entre esconder o estouro e não ter estouro.
+   */
+  overflow-wrap: anywhere;
 }
 
 .sobrancelha::before {

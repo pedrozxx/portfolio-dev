@@ -105,8 +105,39 @@ for (const { arquivo, lang } of PAGINAS) {
     if (!hreflangs.includes(esperado)) reprovar(p, 'hreflang', `falta ${esperado}`)
   }
 
-  if (!document.querySelector('a[href^="#"]')) {
-    reprovar(p, 'skip link', 'nenhuma âncora interna — o skip link some junto')
+  /*
+   * Skip link: PRIMEIRO link do documento, e com alvo que existe.
+   *
+   * A regra anterior era `querySelector('a[href^="#"]')` — satisfeita por
+   * qualquer âncora interna. O `<a href="#topo">` da marca no cabeçalho a
+   * satisfaz para sempre, então apagar o skip link não reprovaria nada: a
+   * verificação era um falso negativo permanente.
+   *
+   * As duas condições abaixo são o que realmente faz um skip link funcionar.
+   * Ser o primeiro link importa porque o valor dele é chegar antes de todo o
+   * resto no Tab; e o alvo precisa existir, senão o foco não vai a lugar nenhum
+   * e a pessoa fica presa no cabeçalho.
+   */
+  const principal = document.querySelector('main')
+  const primeiro = document.querySelector('a')
+  const destino = primeiro?.getAttribute('href') ?? ''
+  const alvo = destino.startsWith('#') ? document.getElementById(destino.slice(1)) : null
+
+  if (!principal) {
+    reprovar(p, 'skip link', 'não há <main> para onde pular')
+  } else if (alvo === null) {
+    reprovar(
+      p,
+      'skip link',
+      `o primeiro link do documento é "${destino}", que não resolve para nenhum elemento`,
+    )
+  } else if (alvo !== principal) {
+    reprovar(
+      p,
+      'skip link',
+      `o primeiro link aponta para "${destino}", que não é o <main> — ` +
+        `apagar o skip link deixaria a marca do cabeçalho ocupar esse lugar em silêncio`,
+    )
   }
 
   console.log(

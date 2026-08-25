@@ -1,7 +1,7 @@
 /**
  * Faixa técnica: itens em mono separados por ponto médio.
  *
- * Substitui o "chip" com logo colorido (DESIGN.md §5.5). Sem pílula, sem
+ * Substitui o "chip" com logo colorido (DESIGN.md §5). Sem pílula, sem
  * preenchimento, sem borda, sem ícone. Um marcador nunca é clicável e nunca é
  * focável — se precisasse de foco, teria virado link.
  *

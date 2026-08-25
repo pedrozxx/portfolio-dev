@@ -26,7 +26,7 @@ export interface Decisao {
    * cuja tese é que toda afirmação tem procedência, procedência trocada é o
    * pior defeito possível.
    *
-   * Máximo 20 caracteres por linha, no máximo 2 linhas (DESIGN.md §6.2).
+   * Máximo 20 caracteres por linha, no máximo 2 linhas (DESIGN.md §6).
    */
   readonly fonte: string
   readonly sintoma: Bilingue

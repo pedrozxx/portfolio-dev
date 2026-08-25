@@ -48,7 +48,22 @@ for (const { idioma, arquivo } of PAGINAS) {
   }
 
   const marcacao = renderizar(idioma)
-  await writeFile(caminho, html.replace(MARCADOR, `<div id="root">${marcacao}</div>`), 'utf8')
+
+  /*
+   * O replacer é uma FUNÇÃO, e isso não é estilo.
+   *
+   * Com uma string de substituição, `String.prototype.replace` interpreta `$&`,
+   * crase-cifrão, `$'`, `$$` e `$<nome>` como padrões: `$&` vira o texto casado, `$'`
+   * vira todo o resto do documento. A marcação injetada aqui é conteúdo, não
+   * padrão — e ela carrega cifrões, porque o site fala de dinheiro em reais.
+   * Hoje só existe `R$ ` com espaço, que não casa com nenhum padrão; um
+   * `R$&nbsp;340 mi` amanhã duplicaria o documento inteiro dentro do #root,
+   * em silêncio, num arquivo que ninguém abre depois do build.
+   *
+   * Devolvendo a string de dentro de uma função, ela é usada literalmente.
+   */
+  const html2 = html.replace(MARCADOR, () => `<div id="root">${marcacao}</div>`)
+  await writeFile(caminho, html2, 'utf8')
 
   console.log(`prerender: ${arquivo} — ${marcacao.length.toLocaleString('pt-BR')} caracteres de HTML injetados`)
 }

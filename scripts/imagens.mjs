@@ -25,8 +25,16 @@ const destino = resolve(raiz, 'src/assets/projetos')
  * Duas larguras: a do cartão em tela comum e a mesma em tela de densidade 2x.
  * Não gerar mais do que o layout usa — cada variante extra é peso no repositório
  * e uma decisão a mais no srcset sem ganho visível.
+ *
+ * 384px é o teto REAL do cartão: `.cartao` é `flex: 0 0 clamp(17rem, 30vw, 24rem)`,
+ * e 24rem = 384px. Medido na página, o `<img>` renderiza a 382 CSS px.
+ *
+ * Estava em [760, 1520], número herdado do layout anterior, em que o cartão era
+ * largo. Depois que os projetos viraram trilho horizontal ninguém remediu: o
+ * arquivo "1x" virou, na prática, um 2x, e o "@2x" virou um 4x — quatro vezes
+ * mais pixels do que qualquer tela consegue mostrar naquele slot.
  */
-const LARGURAS = [760, 1520]
+const LARGURAS = [384, 768]
 
 await mkdir(destino, { recursive: true })
 

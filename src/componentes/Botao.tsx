@@ -1,7 +1,7 @@
 import type { AnchorHTMLAttributes, ReactNode } from 'react'
 
 /**
- * Dois tipos e só dois (DESIGN.md §5.2). O primário existe em exatamente dois
+ * Dois tipos e só dois (DESIGN.md §5). O primário existe em exatamente dois
  * lugares da página: cabeçalho e contato.
  *
  * Não há estado desabilitado neste site: se a ação não pode acontecer, o botão

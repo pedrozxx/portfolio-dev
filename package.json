@@ -13,7 +13,8 @@
     "contraste": "node scripts/contraste.mjs",
     "imagens": "node scripts/imagens.mjs",
     "icones": "node scripts/icones.mjs",
-    "auditar-html": "node scripts/auditar-html.mjs"
+    "auditar-html": "node scripts/auditar-html.mjs",
+    "og": "node scripts/og.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",

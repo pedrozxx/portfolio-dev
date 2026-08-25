@@ -3,7 +3,7 @@
  *
  * A paleta e a tipografia foram medidas em matteodante.it/en no Chrome, a pedido
  * do autor, e adotadas como direção. Os valores originais estão preservados; os
- * dois ajustes que a acessibilidade exigiu estão registrados no DESIGN.md §2.5 e
+ * dois ajustes que a acessibilidade exigiu estão registrados no DESIGN.md §2.3 e
  * recalculados por scripts/contraste.mjs a cada push.
  *
  * Nenhum hex fora deste arquivo.
@@ -65,6 +65,37 @@
   initial-value: 0px;
 }
 
+/*
+ * O til vem de outra fonte. Seis pontos de código, e um defeito medido.
+ *
+ * Orbitron NÃO SABE DESENHAR TIL. Renderizado a 76px no Chrome e comparado lado
+ * a lado: o "ã" dela sai idêntico ao "à" — um traço reto inclinado, não um til —
+ * e o "õ" sai como "ò". O H1 em português deste site é "Meu código roda em
+ * produção.", e ele estava sendo publicado como "produçào". Três títulos
+ * afetados na página: o H1, "Formação" e "Radar de Licitações do Pará".
+ *
+ * Rajdhani não resolve: o til dela é um breve ("ă"). Toda fonte de sistema
+ * testada (Segoe UI, Arial, Verdana, Tahoma, Trebuchet) desenha certo.
+ *
+ * Então só estes seis pontos de código saem do Orbitron. O `unicode-range`
+ * restringe esta família ao til e ao "ñ"; para todo o resto o navegador cai no
+ * Orbitron da linha seguinte da pilha, e o desenho da direção fica intacto.
+ * Não há `url()` de propósito: nenhuma requisição a mais, e num sistema sem
+ * nenhuma das locais a página volta ao comportamento antigo em vez de sumir
+ * com a letra.
+ *
+ * O DESIGN.md §3.1 já falava do til de PRODUÇÃO — como problema de entrelinha,
+ * porque o acento estourava a caixa. Ninguém tinha olhado o desenho dele.
+ */
+@font-face {
+  font-family: "Til Correto";
+  src: local("Segoe UI Semibold"), local("Segoe UI"), local("Helvetica Neue"),
+    local("Arial"), local("Liberation Sans"), local("DejaVu Sans");
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+00C3, U+00E3, U+00D5, U+00F5, U+00D1, U+00F1;
+}
+
 :root {
   /* --- cor: escuro (canônico) --- */
   --papel:            #05060A;
@@ -80,7 +111,7 @@
   --fio-estrutural:   #6E6960;
 
   /* --- tipografia --- */
-  --fonte-display: "Orbitron", "Rajdhani", ui-sans-serif, system-ui, sans-serif;
+  --fonte-display: "Til Correto", "Orbitron", "Rajdhani", ui-sans-serif, system-ui, sans-serif;
   --fonte:         "Rajdhani", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
   --fonte-mono:    "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
 
