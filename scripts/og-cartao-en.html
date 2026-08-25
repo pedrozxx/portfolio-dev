@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /*
+    Cartão de compartilhamento, 1200x630 -> public/og-en.png.
+
+    Gere com `npm run og`, que abre este arquivo no Chrome headless e recorta
+    exatamente 1200x630. A instrução anterior era "capture a tela e recorte o
+    canto superior esquerdo" — trabalho manual, sem recorte reproduzível, e foi
+    assim que este cartão ficou para trás quando a direção mudou: ele continuou
+    turquesa (#35C4B5 sobre #0C1B22, fonte Sora) por três reescritas, enquanto o
+    site virava laranja sobre quase-preto. É a primeira coisa que aparece no
+    WhatsApp e no LinkedIn — errar aqui é errar na única tela que muita gente vê.
+
+    As cores são cópia literal de src/estilos/tokens.css, tema escuro. Não há
+    como importar o CSS aqui (o Chrome headless abre este arquivo sozinho), então
+    a duplicação é consciente: se os tokens mudarem, este arquivo muda junto.
+  */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1200px; height:630px; overflow:hidden; }
+  body {
+    background:#05060A; color:#D4CFC5;
+    font-family:'Sora',sans-serif;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 96px; position:relative;
+  }
+  .barra { position:absolute; left:0; top:0; bottom:0; width:6px; background:#FF6B35; }
+  .sobrancelha {
+    display:flex; align-items:center; gap:16px;
+    font-family:'JetBrains Mono',monospace; font-weight:500;
+    font-size:20px; letter-spacing:.32em; text-transform:uppercase; color:#FF6B35;
+  }
+  .sobrancelha::before { content:''; width:56px; height:2px; background:#FF6B35; }
+  h1 {
+    font-family:'Sora',sans-serif; font-weight:700;
+    font-size:48px; letter-spacing:-.025em; margin:28px 0 20px;
+    line-height:1.1; max-width:21ch; color:#F2EDE3;
+  }
+  .apoio { font-size:26px; line-height:1.4; max-width:60ch; color:#8A8680; }
+  .regua { display:flex; gap:44px; margin-top:32px; padding-top:24px; border-top:1px solid #6E6960; }
+  .item { display:flex; flex-direction:column; gap:4px; }
+  .valor { font-family:'JetBrains Mono',monospace; font-weight:500; font-size:26px; font-variant-numeric:tabular-nums; color:#F2EDE3; }
+  .rot { font-family:'JetBrains Mono',monospace; font-size:15px; letter-spacing:.06em; color:#8A8680; text-transform:uppercase; }
+  .rodape { margin-top:34px; font-family:'JetBrains Mono',monospace; font-size:18px; letter-spacing:.06em; color:#8A8680; }
+</style>
+</head>
+<body>
+  <div class="barra"></div>
+  <p class="sobrancelha" id="sobrancelha">Castanhal &middot; Par&aacute; &middot; Brazil</p>
+  <h1 id="titulo">My code runs in production — and you can check it.</h1>
+  <p class="apoio" id="apoio">Pedro Augusto Darolt &middot; software developer &middot; intern or junior</p>
+  <div class="regua">
+    <div class="item"><span class="valor">1,563 &rarr; 93</span><span class="rot" id="r1">lines, main component</span></div>
+    <div class="item"><span class="valor">7</span><span class="rot" id="r2">published projects</span></div>
+    <div class="item"><span class="valor">JUN/2026 &rarr;</span><span class="rot" id="r3">dev intern, Benevides (PA)</span></div>
+  </div>
+  <p class="rodape" id="rodape">github.com/pedrozxx &middot; linkedin.com/in/pedro-darolt</p>
+</body>
+</html>

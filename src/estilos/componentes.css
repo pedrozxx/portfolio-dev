@@ -1,0 +1,1391 @@
+/*
+ * Componentes.
+ *
+ * Regras transversais, válidas em tudo aqui:
+ *   1. Nada que contenha texto recebe altura fixa em px — só min-height e
+ *      padding. É o que garante sobreviver ao zoom de 200% e ao inglês, que é
+ *      mais longo que o português.
+ *   2. Nenhum container que hospede elemento focável tem overflow: hidden —
+ *      é o que recorta o anel de foco.
+ *   3. Todo item de grid ou flex que hospede texto leva min-inline-size: 0.
+ *      Sem isso o item se recusa a encolher abaixo do conteúdo mínimo e vaza
+ *      para fora da própria trilha.
+ */
+
+/* ---------- skip link ---------- */
+
+.pular {
+  position: absolute;
+  inset-block-start: var(--e2);
+  inset-inline-start: var(--e2);
+  z-index: 200;
+  padding: var(--e3) var(--e4);
+  background: var(--acento);
+  color: var(--acento-contraste);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  text-decoration: none;
+  /* Sai da tela por transform, não por display none: assim continua focável. */
+  transform: translateY(calc(-100% - var(--e4)));
+  transition: transform var(--transicao);
+}
+.pular:focus {
+  transform: translateY(0);
+}
+
+/* ---------- barra de progresso de rolagem ---------- */
+
+/*
+ * A faixa no topo da página, na cor do acento. Cresce por scaleX, que roda na
+ * composição: não repinta e não recalcula layout durante a rolagem.
+ */
+.progresso {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  z-index: 150;
+  background: var(--acento);
+  transform: scaleX(var(--progresso));
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* Sem JS a barra nasce cheia: um indicador zerado parece defeito. */
+@media (prefers-reduced-motion: reduce) {
+  .progresso {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- cabeçalho ---------- */
+
+.cabecalho {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 100;
+  min-block-size: var(--altura-cabecalho);
+  display: flex;
+  align-items: center;
+  background: var(--papel);
+  border-block-end: 1px solid transparent;
+  transition: border-color var(--transicao);
+}
+.cabecalho[data-rolou="sim"] {
+  border-block-end-color: var(--fio);
+}
+
+.cabecalho__interno {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  inline-size: 100%;
+  flex-wrap: wrap;
+  row-gap: var(--e2);
+}
+
+.cabecalho__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tinta-forte);
+  text-decoration: none;
+  min-inline-size: 0;
+}
+.cabecalho__marca:hover {
+  color: var(--acento);
+}
+.cabecalho__avatar {
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--raio-pilula);
+  object-fit: cover;
+  border: 1px solid var(--fio-estrutural);
+  flex: 0 0 auto;
+}
+
+.cabecalho__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+}
+/* Empurra o bloco de ações para a direita agora que não há navegação no meio. */
+.cabecalho__acoes--fim {
+  margin-inline-start: auto;
+}
+
+.alternador a,
+.alternador span {
+  color: var(--tinta-fraca);
+  text-decoration: none;
+}
+.alternador a {
+  min-block-size: var(--alvo);
+  display: inline-flex;
+  align-items: center;
+}
+.alternador a:hover {
+  color: var(--acento);
+}
+.alternador__ativo {
+  color: var(--tinta-forte);
+  font-weight: 500;
+}
+
+.alternador__tema {
+  background: none;
+  border: 0;
+  padding: var(--e2) 0;
+  min-block-size: var(--alvo);
+  color: var(--tinta-fraca);
+  cursor: pointer;
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  letter-spacing: var(--tracking-rotulo);
+}
+.alternador__tema:hover {
+  color: var(--acento);
+}
+.alternador__tema:active {
+  transform: translateY(1px);
+}
+
+/*
+ * Qual rótulo do tema aparece segue a MESMA cascata dos tokens. Se divergir, o
+ * botão passa a dizer "escuro" numa página que já está escura. Esta direção é
+ * escura por padrão, então o ramo visível no estado inicial é o "claro".
+ */
+.tema--no-claro {
+  display: none;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-tema="escuro"]) .tema--no-escuro {
+    display: none;
+  }
+  :root:not([data-tema="escuro"]) .tema--no-claro {
+    display: inline;
+  }
+}
+:root[data-tema="claro"] .tema--no-escuro {
+  display: none;
+}
+:root[data-tema="claro"] .tema--no-claro {
+  display: inline;
+}
+:root[data-tema="escuro"] .tema--no-escuro {
+  display: inline;
+}
+:root[data-tema="escuro"] .tema--no-claro {
+  display: none;
+}
+
+@media (max-width: 1099px) {
+  .cabecalho__nav {
+    display: none;
+  }
+  .cabecalho__menu {
+    display: block;
+  }
+}
+
+/* ---------- botão ---------- */
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  min-block-size: var(--alvo);
+  padding-inline: var(--e5);
+  padding-block: var(--e2);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  font-weight: 500;
+  letter-spacing: var(--tracking-rotulo);
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  border-radius: var(--raio-pilula);
+  max-inline-size: 100%;
+  transition: background-color var(--transicao), border-color var(--transicao),
+    color var(--transicao), transform var(--transicao);
+}
+.botao:active {
+  transform: translateY(1px);
+}
+
+.botao--primario {
+  background: var(--acento);
+  /* Fundo da página como texto: 7,14:1. O creme daria 2,43:1. */
+  color: var(--acento-contraste);
+  border: 1px solid var(--acento);
+}
+.botao--primario:hover {
+  filter: brightness(1.12);
+}
+
+.botao--secundario {
+  background: transparent;
+  color: var(--tinta-forte);
+  border: 1px solid var(--fio-estrutural);
+}
+.botao--secundario:hover {
+  border-color: var(--acento);
+  color: var(--acento);
+}
+
+/* ---------- links ---------- */
+
+a {
+  color: var(--acento);
+}
+
+.link-externo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-block-size: var(--alvo);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  letter-spacing: var(--tracking-rotulo);
+  text-transform: uppercase;
+  color: var(--acento);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  /* `nowrap` no contêiner: com `wrap`, a seta caía sozinha numa segunda linha
+     sempre que o rótulo enchia a largura do cartão. O texto continua podendo
+     quebrar por dentro; a seta acompanha a última linha, que é onde ela
+     significa alguma coisa. */
+  flex-wrap: nowrap;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  transition: text-underline-offset var(--transicao), color var(--transicao);
+}
+.link-externo:hover {
+  text-underline-offset: 7px;
+}
+.link-externo:active {
+  transform: translateY(1px);
+}
+
+/* ---------- abertura ---------- */
+
+.abertura {
+  position: relative;
+  min-block-size: 100svh;
+  display: flex;
+  align-items: center;
+  padding-block: var(--e9) var(--e8);
+}
+
+/*
+ * A sequência: o bloco do hero apaga e encolhe conforme a pessoa rola, movido
+ * por custom properties escritas em requestAnimationFrame. Só opacity e
+ * transform — nada que provoque layout.
+ */
+.abertura__conteudo {
+  opacity: var(--hero-opacidade, 1);
+  transform: scale(var(--hero-escala, 1)) translate3d(0, var(--hero-y, 0px), 0);
+}
+
+.abertura__titulo {
+  margin-block: var(--e5) var(--e6);
+  color: var(--tinta-forte);
+  line-height: 1.04;
+  /* Menor que o display máximo: com o retrato fora do hero, o título ganhou a
+     tela toda e a 7rem passava a ocupar três linhas cheias, empurrando o
+     parágrafo e os botões para fora da primeira dobra. */
+  font-size: clamp(2.25rem, 6.2vw, 4.75rem);
+  /* `em`, não `ch`: o ch muda com a fonte de fallback, e o título trocava de
+     número de linhas quando a Sora chegava — 79px de salto no hero em inglês. */
+  max-inline-size: min(13.75em, 100%);
+}
+
+.abertura__apresentacao {
+  display: flex;
+  gap: var(--e5);
+  align-items: flex-start;
+}
+.abertura__stack {
+  margin-block-start: var(--e5);
+  color: var(--tinta-fraca);
+}
+.abertura__acoes {
+  display: flex;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  margin-block-start: var(--e6);
+}
+
+/* A dica de rolagem, com o mesmo pulso longo do site de referência. */
+.abertura__dica {
+  position: absolute;
+  inset-block-end: var(--e6);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e2);
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  letter-spacing: var(--tracking-sobrancelha);
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  opacity: var(--hero-opacidade, 1);
+  pointer-events: none;
+  /* Sem `nowrap`: com o tracking de 0,32em, "ROLE PARA ENTRAR" mede 344px no
+     zoom de texto a 200% e passava da borda numa tela de 320. */
+  text-align: center;
+  max-inline-size: calc(100vw - 2 * var(--recuo-pagina));
+}
+.abertura__dica span:last-child {
+  animation: pulsar 2.4s var(--ease-in-out-cubic) infinite;
+}
+@keyframes pulsar {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+/* ---------- linha de passagem ---------- */
+
+/*
+ * A frase que entra enquanto o hero sai. É o que faz a abertura ler como
+ * passagem, e não como duas seções empilhadas.
+ */
+.passagem {
+  position: relative;
+  min-block-size: 80svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-block: var(--e8);
+}
+.passagem__texto {
+  color: var(--tinta-fraca);
+  /* `.display` dá família, peso e tracking, mas não tamanho — e sem esta linha
+     a frase saía nos 17px do corpo, sozinha em 80svh de tela. Medido no dist:
+     285×35px numa seção de 569px. */
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  opacity: var(--passagem-opacidade, 1);
+  transform: translate3d(0, var(--passagem-y, 0px), 0);
+  max-inline-size: min(22ch, 100%);
+  will-change: transform, opacity;
+}
+
+/* ---------- marquee ---------- */
+
+/*
+ * Faixa de palavras-chave correndo na horizontal. Duas fitas, sentidos opostos.
+ *
+ * O conteúdo é duplicado no DOM e a segunda cópia é `aria-hidden`: a animação
+ * precisa de dois blocos idênticos para o laço não ter emenda visível, mas o
+ * leitor de tela ouviria a lista duas vezes.
+ */
+.marquee {
+  --duracao: 46s;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e3);
+  padding-block: var(--e7);
+  border-block: 1px solid var(--fio);
+  /* Único lugar do site com overflow escondido, e ele não hospeda nada focável:
+     são palavras, não controles. */
+  overflow: hidden;
+  user-select: none;
+}
+.marquee__fita {
+  display: flex;
+  inline-size: max-content;
+  animation: correr var(--duracao) linear infinite;
+}
+.marquee__fita--volta {
+  animation-direction: reverse;
+  --duracao: 58s;
+}
+.marquee__grupo {
+  display: flex;
+  gap: var(--e6);
+  padding-inline-end: var(--e6);
+}
+/*
+ * Contorno de texto, alternando com palavras cheias — é assim na referência, e é
+ * o que dá profundidade à faixa sem acender mais uma cor.
+ *
+ * Registro de um erro meu: cheguei a trocar o contorno por cor sólida achando
+ * que ele custava caro. Não custa — o "1 fps" que eu tinha medido era artefato
+ * de medir `requestAnimationFrame` numa aba em segundo plano, onde o Chrome
+ * simplesmente congela o rAF. O contorno voltou.
+ */
+.marquee__item {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 2.4vw, 1.75rem);
+  letter-spacing: 0.02em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--fio-estrutural);
+  white-space: nowrap;
+}
+.marquee__item--cheio {
+  color: var(--tinta-fraca);
+  -webkit-text-stroke: 0;
+}
+@keyframes correr {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+  }
+  .marquee__fita {
+    animation: none;
+  }
+}
+
+/* ---------- capítulo ---------- */
+
+.capitulo {
+  position: relative;
+  padding-block: var(--e9);
+  /* `isolation` cria contexto de empilhamento próprio: sem ele o numeral
+     fantasma de um capítulo passaria por cima do vizinho. */
+  isolation: isolate;
+}
+
+/*
+ * O numeral gigante contornado ao fundo. Decorativo por construção — o mesmo
+ * número aparece na sobrancelha, em texto, então escondê-lo não perde nada.
+ */
+.capitulo__fantasma {
+  position: absolute;
+  inset-block-start: var(--e5);
+  inset-inline-start: var(--recuo-pagina);
+  z-index: -1;
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  /*
+   * `min(20vw, 16rem)` e nao `clamp(6rem, 20vw, 16rem)`: o minimo em rem dobra
+   * junto com o zoom de texto, e a 200% numa tela de 320 o numeral sozinho
+   * media 345px e estourava a pagina em 47px. Preso a viewport, ele nunca passa
+   * de um quinto da largura, em qualquer zoom.
+   */
+  font-size: min(20vw, 16rem);
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--fio);
+  pointer-events: none;
+  user-select: none;
+  /* Estático e isolado: `contain` impede que a repintura dele arraste o resto
+     da seção junto. Contorno de texto é caro; contorno de texto que reflete em
+     vizinho é caro duas vezes. */
+  contain: paint;
+}
+
+.capitulo__titulo {
+  margin-block: var(--e4) var(--e6);
+  color: var(--tinta-forte);
+}
+.capitulo__texto {
+  color: var(--tinta);
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+}
+
+/* ---------- revelação de entrada ---------- */
+
+/*
+ * O estado base é VISÍVEL. A classe de animação é ACRESCENTADA pelo JS, nunca o
+ * contrário: um reveal que começa invisível esconde a página inteira quando o
+ * bundle falha, e é assim que portfólio some da tela de um recrutador com
+ * bloqueador agressivo.
+ */
+.entra {
+  opacity: 1;
+  transform: none;
+}
+.entra--pronto {
+  animation: entrar var(--entrada) both;
+  animation-delay: var(--atraso, 0ms);
+}
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entra--pronto {
+    animation: none;
+  }
+}
+
+/* ---------- capítulo de capacidade ---------- */
+
+/*
+ * Coluna única por padrão; duas colunas iguais acima de 1024px (DESIGN.md §6.2).
+ * Qual lado a figura ocupa é decidido pela ORDEM DO DOM em Capacidade.tsx — não
+ * há `order` nem `grid-template-areas` aqui, de propósito (§11).
+ */
+.capacidade__interno {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e6);
+  min-block-size: 62svh;
+  align-content: center;
+}
+.capacidade__bloco {
+  min-inline-size: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e4);
+}
+.capacidade__titulo {
+  margin-block: var(--e4) var(--e2);
+  max-inline-size: min(10.75em, 100%);
+}
+.capacidade__texto {
+  margin-block-end: var(--e3);
+}
+.capacidade__stack {
+  color: var(--tinta-fraca);
+}
+
+/*
+ * A figura (DESIGN.md §6.2) e os dois movimentos dela (§7, itens 7 e 8).
+ *
+ * `.figura` tem o `perspective` e NÃO se move. `.figura__palco` inclina com o
+ * ponteiro: `--px`/`--py` são escritos pelo useParalaxe nele mesmo. Cada
+ * `.fig__camada` desloca por `--dx`/`--dy`, escritos nela mesma, já
+ * multiplicados pela profundidade — e o `.fig__flutua` de dentro levita por
+ * keyframes. São dois `<g>` porque animação e propriedade base disputam o mesmo
+ * `transform`, e a animação vence: num elemento só o paralaxe morreria.
+ *
+ * `translate()` e não `translate3d()` nas camadas: são elementos SVG, e
+ * transformação 3D em elemento SVG não é garantida fora do Chrome.
+ */
+.figura {
+  inline-size: 100%;
+  max-inline-size: 22rem;
+  perspective: 1200px;
+}
+.figura__palco {
+  transform: rotateX(calc(var(--py) * -4deg)) rotateY(calc(var(--px) * 4deg));
+  transition: transform 0.7s var(--ease-out-expo);
+}
+.fig {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 4 / 3;
+  overflow: visible;
+}
+.fig__camada {
+  transform: translate(var(--dx), var(--dy));
+  transition: transform 0.7s var(--ease-out-expo);
+}
+.fig__flutua {
+  animation: flutuar var(--flutua, 6s) ease-in-out var(--flutua-atraso, 0s) infinite alternate;
+}
+@keyframes flutuar {
+  from {
+    transform: translate(0, -5px);
+  }
+  to {
+    transform: translate(0, 5px);
+  }
+}
+
+/* As formas: só classe, só token. Nenhum hex, nenhum texto (§6.2). */
+.fig__painel {
+  fill: var(--superficie);
+  stroke: var(--fio-estrutural);
+  stroke-width: 1.5;
+}
+.fig__painel--alta {
+  fill: var(--superficie-alta);
+}
+.fig__campo {
+  fill: var(--papel);
+  stroke: var(--fio-estrutural);
+  stroke-width: 1.5;
+}
+.fig__fio {
+  fill: none;
+  stroke: var(--fio-estrutural);
+  stroke-width: 1.5;
+}
+.fig__fio--fraco {
+  stroke: var(--fio);
+}
+.fig__barra {
+  fill: var(--tinta-fraca);
+  opacity: 0.6;
+}
+.fig__barra--apagada {
+  opacity: 0.32;
+}
+.fig__forte {
+  fill: var(--tinta-forte);
+  opacity: 0.92;
+}
+.fig__acento {
+  fill: var(--acento);
+}
+.fig__acento-fio {
+  fill: none;
+  stroke: var(--acento);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fig__traco--grosso {
+  stroke-width: 2.5;
+}
+.fig__traco-contraste {
+  fill: none;
+  stroke: var(--acento-contraste);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fig__estado {
+  fill: var(--estado);
+}
+.fig__estado-fio {
+  fill: none;
+  stroke: var(--estado);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.fig__tracejado {
+  stroke-dasharray: 4 5;
+}
+
+@media (min-width: 1024px) {
+  /*
+   * A decisão de duas colunas é em rem, não no breakpoint em px: `auto-fit`
+   * com mínimo de 27rem dá duas colunas a partir de 1024px na fonte padrão —
+   * e volta sozinho a UMA coluna no zoom de texto a 200%, quando 27rem viram
+   * 864px. Com `1fr 1fr` fixo, o parágrafo ficava com ~20 caracteres por linha
+   * a 200% (WCAG 1.4.4), e o gate de estouro não pegava porque nada estourava.
+   */
+  .capacidade__interno {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr));
+    gap: var(--e8);
+    align-items: center;
+  }
+  .figura {
+    max-inline-size: 32rem;
+  }
+  /* Só a figura que vem DEPOIS do texto (capítulo 03) encosta na borda direita,
+     espelhando as que encostam na esquerda. Sem `order`: é o irmão seguinte. */
+  .capacidade__bloco + .figura {
+    justify-self: end;
+  }
+}
+
+/* Movimento reduzido: a figura fica em repouso, que é o estado base (§1.1). */
+@media (prefers-reduced-motion: reduce) {
+  .fig__flutua {
+    animation: none;
+  }
+  .figura__palco,
+  .fig__camada {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ---------- radar (herdado, agora só no cartão) ---------- */
+
+.radar {
+  display: grid;
+  grid-template-columns: [texto] minmax(0, 1fr) [captura] minmax(0, 26rem);
+  gap: var(--e7);
+  align-items: start;
+  margin-block-start: var(--e6);
+}
+.radar__captura img,
+.cartao__captura img {
+  aspect-ratio: var(--proporcao-captura);
+  object-fit: cover;
+  border: 1px solid var(--fio-estrutural);
+  border-radius: var(--raio);
+  inline-size: 100%;
+}
+
+/* ---------- trilho horizontal ---------- */
+
+/*
+ * A seção é alta de propósito: a altura dela é o percurso de rolagem que move os
+ * cartões na horizontal. O miolo fica `sticky` e ocupa uma tela.
+ */
+.trilho {
+  position: relative;
+}
+.trilho__palco {
+  position: sticky;
+  /* Desconta o cabeçalho fixo. Com `top: 0` o título ficava por baixo da barra
+     e o rodapé do trilho era cortado pela borda inferior. */
+  inset-block-start: var(--altura-cabecalho);
+  block-size: calc(100svh - var(--altura-cabecalho));
+  /*
+    Duas colunas: o bloco de texto fica parado à esquerda enquanto os cartões
+    passam à direita. A pista NÃO respeita o contêiner — ela sangra até a borda
+    da tela, que é o que faz o próximo cartão aparecer cortado e anunciar que há
+    mais coisa vindo.
+  */
+  display: grid;
+  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--e7);
+  padding-inline-start: max(
+    var(--recuo-pagina),
+    calc((100vw - var(--largura-maxima)) / 2 + var(--recuo-pagina))
+  );
+}
+
+.trilho__texto {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e4);
+}
+.trilho__titulo {
+  font-family: var(--fonte-display);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.04;
+  font-size: clamp(2rem, 4.6vw, 3.75rem);
+  color: var(--tinta-forte);
+}
+.trilho__resumo {
+  color: var(--tinta);
+}
+.trilho__dica {
+  color: var(--tinta-fraca);
+  font-size: 0.875rem;
+  letter-spacing: var(--tracking-sobrancelha);
+  text-transform: uppercase;
+}
+.trilho__seta {
+  color: var(--acento);
+  display: inline-block;
+  animation: pulsar 2.4s var(--ease-in-out-cubic) infinite;
+}
+
+.trilho__pista {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e5);
+  /* Vinheta radial no acento, a 8%: e o que da ao cartao translucido (S5) algo
+     para deixar passar. Sem ela o papel atras e chapado e "translucido" vira
+     "um pouco mais claro". E o mesmo recurso do banner do LinkedIn do Pedro
+     (vinheta radial a 7%), pintado uma vez e nunca repintado: e fundo estatico
+     da pista, nao do cartao que se move. */
+}
+/*
+ * `color-mix` só sob `@supports`, e o motivo é medido: o Tailwind v4 passa o
+ * CSS pelo Lightning CSS, que emite um fallback antes de cada color-mix — e o
+ * fallback que ele escolheu para a vinheta era `var(--acento)` a 100%. Num
+ * navegador sem color-mix (anteriores a 2023) isso é uma mancha laranja atrás
+ * do trilho. Fora do @supports, o fallback é explícito e seguro: nenhuma
+ * vinheta, cartão opaco na superfície.
+ */
+@supports (background: color-mix(in oklab, red 8%, transparent)) {
+  .trilho__pista {
+    background: radial-gradient(
+      58% 72% at 62% 48%,
+      color-mix(in oklab, var(--acento) 8%, transparent),
+      transparent 72%
+    );
+  }
+}
+
+/*
+ * O recorte acontece AQUI, na pista, e não na lista.
+ *
+ * O `transform` move a caixa inteira da lista para a esquerda — e `overflow` na
+ * própria lista clipa o conteúdo dela, não a caixa. O resultado media: os
+ * cartões passavam por cima do bloco de texto da esquerda e o cobriam. Clipando
+ * na pista, a lista desliza por dentro de uma janela que não sai do lugar.
+ *
+ * `overflow-x: clip` com `overflow-y: visible` — nunca `hidden`, que criaria um
+ * contexto de rolagem e mataria o `position: sticky` do palco.
+ *
+ * O `:has()` liga o recorte só enquanto o deslizamento está ativo. Quando o foco
+ * entra na lista e o deslizamento desliga, a pista volta a não clipar e a lista
+ * volta a rolar nativamente — que é o que leva o cartão focado à vista.
+ */
+.trilho__pista:has(.trilho__lista[data-desliza="sim"]) {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.trilho__lista {
+  display: flex;
+  gap: var(--e5);
+  list-style: none;
+  /* Respiro vertical para o anel de foco do cartão não encostar na borda. */
+  padding: var(--e2) 0;
+  margin: 0;
+  /* Rolagem horizontal de verdade. É o que faz o Tab funcionar: o navegador
+     rola até o cartão focado sozinho, sem uma linha de JavaScript. */
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+/* Com o efeito ligado, quem move é o transform; a rolagem nativa fica de
+   reserva para o teclado. */
+.trilho__lista[data-desliza="sim"] {
+  /* A lista não clipa nada: quem clipa é a pista. Aqui o overflow fica visível
+     para os cartões continuarem desenhados enquanto atravessam a janela. */
+  overflow-x: visible;
+  transform: translate3d(calc(var(--trilho) * -1px), 0, 0);
+}
+
+/*
+ * Translúcido, não opaco (DESIGN.md §5): o papel e o numeral fantasma aparecem
+ * através do cartão conforme ele desliza. Sem `backdrop-filter` — sete cartões
+ * desfocando o fundo a cada quadro do trilho custam repintura inteira da pista,
+ * e o papel atrás é chapado: não há o que desfocar.
+ *
+ * O contraste do texto fica entre os dois pares medidos (sobre superfície e
+ * sobre papel), porque a mistura só interpola entre esses dois fundos.
+ */
+.cartao {
+  flex: 0 0 clamp(17rem, 30vw, 24rem);
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  /* Opaco por padrão; o translúcido entra sob @supports, logo abaixo. */
+  background: var(--superficie);
+  border: 1px solid var(--fio-estrutural);
+  border-radius: var(--raio-cartao);
+  min-inline-size: 0;
+  transition:
+    border-color var(--transicao),
+    transform var(--transicao),
+    background-color var(--transicao);
+}
+.cartao:hover {
+  border-color: var(--acento);
+  transform: translateY(-4px);
+}
+.cartao:focus-within {
+  border-color: var(--acento);
+}
+/* O recorte pelo raio acontece SÓ aqui, que não hospeda nada focável — o anel
+   de foco dos links do corpo continua inteiro (§5). */
+.cartao__captura {
+  overflow: clip;
+  border-start-start-radius: calc(var(--raio-cartao) - 1px);
+  border-start-end-radius: calc(var(--raio-cartao) - 1px);
+  border-block-end: 1px solid var(--fio);
+}
+@supports (background: color-mix(in oklab, red 8%, transparent)) {
+  .cartao {
+    background: color-mix(in oklab, var(--superficie) 54%, transparent);
+    border-color: color-mix(in oklab, var(--fio-estrutural) 55%, transparent);
+    /* Realce de 1px na aresta de cima e sombra tingida no papel: é o que separa
+       "vidro" de "retângulo mais claro". */
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, var(--tinta-forte) 8%, transparent),
+      0 28px 44px -30px color-mix(in oklab, var(--papel) 85%, transparent);
+  }
+  .cartao:hover,
+  .cartao:focus-within {
+    border-color: var(--acento);
+  }
+  .cartao:hover {
+    background: color-mix(in oklab, var(--superficie) 74%, transparent);
+  }
+  .cartao__captura {
+    border-block-end-color: color-mix(in oklab, var(--fio-estrutural) 35%, transparent);
+  }
+  .cartao__placa {
+    background: color-mix(in oklab, var(--superficie-alta) 70%, transparent);
+  }
+}
+.cartao__captura img {
+  border: 0;
+  border-radius: 0;
+}
+.cartao__destinos {
+  display: flex;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  margin-block-start: var(--e2);
+}
+.cartao__corpo {
+  padding: var(--e5);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e3);
+}
+.cartao__cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+  flex-wrap: wrap;
+}
+.cartao__indice {
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  color: var(--tinta-fraca);
+}
+.cartao__selo {
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  letter-spacing: var(--tracking-rotulo);
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+  border: 1px solid var(--fio-estrutural);
+  border-radius: var(--raio-pilula);
+  padding: var(--e1) var(--e3);
+}
+.cartao__nome {
+  color: var(--tinta-forte);
+}
+.cartao__resumo {
+  color: var(--tinta);
+  font-size: 1rem;
+}
+.cartao__placa {
+  aspect-ratio: var(--proporcao-captura);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--e5);
+  background: var(--superficie-alta);
+  border-block-end: 1px solid var(--fio);
+  color: var(--tinta-fraca);
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+}
+.cartao__placa-indice {
+  font-family: var(--fonte-display);
+  font-size: 3rem;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--fio-estrutural);
+}
+
+/* O rodapé do trilho: contador, barra e nome do item corrente. */
+.trilho__rodape {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  color: var(--tinta-fraca);
+  flex-wrap: wrap;
+}
+.trilho__barra {
+  flex: 1 1 8rem;
+  min-inline-size: 4rem;
+  block-size: 1px;
+  background: var(--fio-estrutural);
+  position: relative;
+}
+.trilho__barra::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  block-size: 1px;
+  inline-size: 100%;
+  background: var(--acento);
+  transform: scaleX(var(--trilho-avanco, 0));
+  transform-origin: left;
+}
+.trilho__atual {
+  color: var(--tinta-forte);
+  text-transform: uppercase;
+}
+
+/* Abaixo de 768px o efeito não existe: lista vertical comum. Prender a tela num
+   aparelho onde a rolagem é o único gesto disponível é prender a pessoa. */
+@media (max-width: 1023px) {
+  /* Abaixo de 1024px o texto vai para cima da pista: duas colunas nessa largura
+     deixariam a coluna de texto com menos de 20 caracteres por linha. */
+  .trilho__palco {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: var(--e5);
+  }
+}
+
+@media (max-width: 767px) {
+  .trilho {
+    block-size: auto !important;
+  }
+  .trilho__palco {
+    position: static;
+    block-size: auto;
+    padding-inline: var(--recuo-pagina);
+  }
+  .trilho__dica {
+    display: none;
+  }
+  .trilho__lista,
+  .trilho__lista[data-desliza="sim"] {
+    flex-direction: column;
+    overflow-x: visible;
+    transform: none;
+    scroll-snap-type: none;
+  }
+  .cartao {
+    flex: 0 0 auto;
+  }
+  .trilho__rodape {
+    display: none;
+  }
+}
+
+/* ---------- experiência ---------- */
+
+.cargo {
+  padding-block: var(--e6);
+  border-block-end: 1px solid var(--fio);
+  min-inline-size: 0;
+}
+.cargo:last-child {
+  border-block-end: 0;
+}
+.cargo__cabeca {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--e4);
+  flex-wrap: wrap;
+}
+.cargo__cabeca > * {
+  min-inline-size: 0;
+}
+.cargo__titulo {
+  color: var(--tinta-forte);
+}
+.cargo__expediente {
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  color: var(--tinta-fraca);
+  overflow-wrap: break-word;
+}
+.cargo__resultados {
+  list-style: none;
+  padding: 0;
+  margin-block: var(--e5);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e3);
+}
+.cargo__resultados li {
+  display: grid;
+  grid-template-columns: minmax(0, 8rem) minmax(0, 1fr);
+  gap: var(--e4);
+  align-items: baseline;
+  min-inline-size: 0;
+}
+.cargo__resultados li:not(:has(.cargo__numero)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.cargo__numero {
+  font-family: var(--fonte-mono);
+  font-weight: 500;
+  color: var(--acento);
+  text-align: end;
+}
+.cargo__selo {
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  color: var(--tinta-fraca);
+}
+
+/* ---------- sobre ---------- */
+
+.sobre__texto {
+  margin-block-end: var(--e7);
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+}
+.sobre__sub {
+  margin-block: var(--e7) var(--e5);
+  color: var(--tinta-forte);
+}
+.sobre__stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-block-start: 1px solid var(--fio);
+}
+.sobre__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: var(--e5);
+  align-items: baseline;
+  padding-block: var(--e4);
+  border-block-end: 1px solid var(--fio);
+  min-inline-size: 0;
+}
+.sobre__linha > * {
+  min-inline-size: 0;
+}
+.sobre__rotulo {
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  letter-spacing: var(--tracking-rotulo);
+  text-transform: uppercase;
+  color: var(--acento);
+}
+.sobre__itens {
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  line-height: 1.8;
+  color: var(--tinta);
+  margin: 0;
+}
+/*
+ * O <dd> da Formação empilha curso e instituição.
+ *
+ * Os dois <span> são adjacentes no JSX, e o JSX come a quebra de linha entre
+ * eles: sem regra nenhuma — que era o caso — eles caíam inline, colados, e o
+ * HTML publicado trazia "BSc in Information SystemsUniversidade Federal do Pará
+ * (UFPA) · Aug 2022 – Dec 2027" num fôlego só, no bloco de Formação de um
+ * portfólio de quem procura vaga.
+ */
+.sobre__formacao dd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e1);
+  margin: 0;
+}
+.sobre__curso {
+  color: var(--tinta-forte);
+  font-weight: 600;
+}
+.sobre__instituicao {
+  color: var(--tinta-fraca);
+}
+
+.sobre__assumir {
+  margin: 0;
+  padding-inline-start: var(--e5);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e3);
+  max-inline-size: min(var(--medida), 100%);
+}
+
+/* ---------- contato ---------- */
+
+.contato {
+  min-block-size: 92svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding-block: var(--e9);
+}
+/* A sobrancelha do contato é o único bloco centralizado da página: o fio saiu do
+   fluxo, então centralizar é encolher a caixa ao conteúdo e centrar a caixa. */
+.contato .sobrancelha {
+  inline-size: fit-content;
+  margin-inline: auto;
+  text-align: start;
+}
+.contato__sub {
+  margin-inline: auto;
+  color: var(--tinta-fraca);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+}
+.contato__acoes {
+  display: flex;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-block: var(--e7);
+}
+.contato__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e5);
+  justify-content: center;
+}
+.contato__item {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+  min-block-size: var(--alvo);
+  min-inline-size: 0;
+}
+/*
+ * O e-mail tem 22 caracteres: a 32px em mono passa de 420px e sozinho estoura
+ * uma tela de 390 no zoom de texto a 200%. Precisa poder quebrar em qualquer
+ * ponto — endereço quebrado é feio, barra de rolagem horizontal é falha crítica.
+ */
+.contato__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-block-size: var(--alvo);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+  color: var(--acento);
+  text-underline-offset: 4px;
+}
+.contato__link:hover {
+  text-underline-offset: 7px;
+}
+.contato__link svg {
+  font-size: 1.25rem;
+  flex: 0 0 auto;
+}
+.contato__copiar {
+  background: none;
+  border: 1px solid var(--fio-estrutural);
+  border-radius: var(--raio-pilula);
+  color: var(--tinta-fraca);
+  padding: var(--e2) var(--e4);
+  min-block-size: var(--alvo);
+  cursor: pointer;
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  letter-spacing: var(--tracking-rotulo);
+  text-transform: uppercase;
+  transition: color var(--transicao), border-color var(--transicao);
+}
+.contato__copiar:hover {
+  color: var(--acento);
+  border-color: var(--acento);
+}
+.contato__copiar:active {
+  transform: translateY(1px);
+}
+
+/* ---------- colofão ---------- */
+
+.colofao {
+  border-block-start: 1px solid var(--fio);
+  padding-block: var(--e7) var(--e8);
+}
+.colofao__nome {
+  font-family: var(--fonte-mono);
+  letter-spacing: var(--tracking-rotulo);
+  text-transform: uppercase;
+  color: var(--tinta-forte);
+  margin-block-end: var(--e5);
+}
+.colofao__medidas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e1);
+  color: var(--tinta-fraca);
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  margin-block-end: var(--e5);
+}
+.colofao__medidas dt {
+  color: var(--tinta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-rotulo);
+}
+.colofao__medidas dd {
+  margin: 0;
+}
+.colofao__creditos {
+  color: var(--tinta-fraca);
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  max-inline-size: min(var(--medida), 100%);
+  margin-block-end: var(--e5);
+}
+.colofao a {
+  color: var(--tinta-fraca);
+  text-underline-offset: 3px;
+}
+.colofao a:hover {
+  color: var(--acento);
+}
+.colofao__idioma {
+  display: flex;
+  align-items: center;
+  gap: var(--e1);
+  font-family: var(--fonte-mono);
+  font-size: var(--mono-base);
+}
+
+/* ---------- responsivo ---------- */
+
+@media (max-width: 1023px) {
+  .radar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Zerar a colocação nomeada junto: as linhas `texto` e `captura` só existem na
+     grade de duas colunas, e mantidas aqui o navegador cria trilhas implícitas
+     com esses nomes, dimensionadas pelo conteúdo. */
+  .radar__captura,
+  .radar__texto {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .decisao {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--e2);
+  }
+  .sobre__linha {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--e2);
+  }
+}
+
+@media (max-width: 767px) {
+  .abertura__apresentacao {
+    flex-direction: column;
+  }
+  .cargo__resultados li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cargo__numero {
+    text-align: start;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --recuo-pagina: 1rem;
+  }
+}

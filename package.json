@@ -1,0 +1,36 @@
+{
+  "name": "portfolio-dev",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Portfolio de Pedro Augusto Darolt",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/auditar-html.mjs",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "contraste": "node scripts/contraste.mjs",
+    "imagens": "node scripts/imagens.mjs",
+    "icones": "node scripts/icones.mjs",
+    "auditar-html": "node scripts/auditar-html.mjs",
+    "og": "node scripts/og.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "linkedom": "^0.18.13",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0",
+    "vitest": "^4.1.11"
+  }
+}
