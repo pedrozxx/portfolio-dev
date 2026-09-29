@@ -4,6 +4,9 @@ dist-ssr/
 *.local
 .DS_Store
 .vite/
+.env
+.env.*
+!.env.example
 
 # Material de trabalho do redesign: dossiê de fatos, capturas de referência e
 # notas de deploy com nome de conta. Fica na máquina, não no repositório público.
